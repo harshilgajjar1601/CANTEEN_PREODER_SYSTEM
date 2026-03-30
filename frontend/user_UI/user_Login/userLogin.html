@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <link rel="stylesheet" href="userLogin.css">
+
+    <!-- Font Awesome for eye icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <div class="login-box">
+            
+            <h2 class="title">USER-LOGIN</h2>
+            <p class="subtitle">Welcome User</p>
+
+            <form>
+                <div class="input-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group password-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                    </span>
+                </div>
+
+                <button type="submit" class="login-btn">Log In</button>
+
+                <p class="signup-text">
+                    Don't have an account? 
+                    <a href="#">Sign up</a>
+                </p>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="userLogin.js"></script>
+</body>
+</html>

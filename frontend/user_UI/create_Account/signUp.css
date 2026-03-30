@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Orange + White Gradient */
+    background: linear-gradient(to bottom, rgb(218, 102, 0), rgb(255, 255, 255));
+    padding: 15px;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-box {
+    background: #ffffff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.title {
+    margin-bottom: 25px;
+    color: black;
+    font-weight: bold;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
+}
+
+.input-group input:focus {
+    border-color: #56c16f;
+}
+
+/* Password toggle */
+.password-group input {
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+}
+
+.signup-btn {
+    width: 100%;
+    padding: 12px;
+    background-color:#28a745;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.signup-btn:hover {
+    background-color: #218838;
+}
+
+.login-text {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.login-text a {
+    color:#56c16f;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-text:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* 📱 Responsive */
+@media (max-width: 400px) {
+    .register-box {
+        padding: 25px 15px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+}
