@@ -17,10 +17,12 @@ body {
 
 /* Container */
 .container {
-    width: 100%;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(to bottom, #ff7a00, #ffffff);
+    
 }
 
 /* Card */
