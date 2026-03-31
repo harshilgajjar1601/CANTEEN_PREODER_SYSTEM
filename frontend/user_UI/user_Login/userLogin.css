@@ -2,18 +2,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
 }
 
+/* Background */
 body {
-    background-color: #f5f5f5;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    background: linear-gradient(to bottom, rgb(218, 102, 0), rgb(255, 255, 255));
     align-items: center;
+    background: linear-gradient(to bottom, #ff7a00, #ffffff);
+    padding: 20px;
 }
 
+/* Container */
 .container {
     width: 100%;
     display: flex;
@@ -21,121 +23,150 @@ body {
     align-items: center;
 }
 
-.login-box {
-    background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 15px;
-    width: 320px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+/* Card */
+.login-card {
+    width: 100%;
+    max-width: 350px;
+    padding: 25px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     text-align: center;
+    animation: fadeIn 1s ease;
+}
+
+/* Title */
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
 }
 
 .subtitle {
-    font-size: 14px;
-    color: #777;
+    font-size: 13px;
     margin-bottom: 20px;
-}
-.title {
-    margin-bottom: 25px;
-    color: #333;
-    font-weight: bold;
-    letter-spacing: 1px;
+    color: #555;
 }
 
-.input-group {
-    margin-bottom: 15px;
+/* Input box */
+.input-box {
     position: relative;
+    margin-bottom: 15px;
 }
 
-.input-group input {
+/* Input field */
+.input-box input {
     width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    padding: 12px 45px 12px 38px;
+    border-radius: 10px;
+    border: none;
     outline: none;
-    transition: 0.3s;
+    font-size: 14px;
+
+    background: rgba(255,255,255,0.9);
 }
 
-.input-group input:focus {
-    border-color: #56c16f;
+/* Focus effect */
+.input-box input:focus {
+    box-shadow: 0 0 0 2px rgba(255,122,0,0.3);
 }
 
-/* Password toggle */
-.password-group input {
-    padding-right: 40px;
-}
-
-.toggle-password {
+/* Left icons */
+.input-box i {
     position: absolute;
-    right: 12px;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 14px;
+}
+
+/* Toggle icon */
+.toggle {
+    position: absolute;
+    right: 12%;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
     color: #777;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 500px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-    transition: 0.3s;
-}
-
-.login-btn:hover {
-    background-color: #218838;
-}
-
-.signup-text {
-    margin-top: 15px;
     font-size: 14px;
 }
 
-.signup-text a {
-    color: #56c16f;
-    text-decoration: none;
-    font-weight: bold;
-}
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
 
-.signup-text:hover {
-    text-decoration: underline;
+    background: linear-gradient(to right, #ff7a00, #ff9a3c);
+    color: white;
+    font-size: 15px;
+    margin-top: 10px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
-/* 📱 Mobile extra small devices */
-@media (max-width: 400px) {
-    .login-box {
-        padding: 25px 15px;
-        border-radius: 12px;
+button:hover {
+    transform: scale(1.03);
+}
+
+/* Bottom text */
+.bottom-text {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.bottom-text a {
+    color: #ff7a00;
+    font-weight: bold;
+    text-decoration: none;
+}
+.bottom-text a:hover {
+    text-decoration: underline;
+}
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 📱 Mobile Fix */
+@media (max-width: 480px) {
+
+    body {
+        padding: 15px;
+        align-items: center;
+        animation: fadeIn 1s ease;
     }
 
-    .title {
-        font-size: 18px;
+    .login-card {
+        margin: auto;
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+
+    .login-card h2 {
+        font-size: 20px;
     }
 
     .subtitle {
+        font-size: 12px;
+    }
+
+    .input-box input {
+        padding: 11px 40px 11px 35px;
         font-size: 13px;
     }
 
-    .login-btn {
+    button {
+        padding: 11px;
         font-size: 14px;
-        padding: 10px;
-    }
-}
-
-/* 💻 Tablet */
-@media (min-width: 768px) {
-    .login-box {
-        max-width: 400px;
-        padding: 40px 30px;
-    }
-
-    .title {
-        font-size: 22px;
     }
 }

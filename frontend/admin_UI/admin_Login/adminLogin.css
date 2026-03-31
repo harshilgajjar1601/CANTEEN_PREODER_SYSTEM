@@ -1,0 +1,172 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Background */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, #ff7a00, #ffffff);
+    padding: 20px;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card */
+.login-card {
+    width: 100%;
+    max-width: 350px;
+    padding: 25px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    text-align: center;
+    animation: fadeIn 1s ease;
+}
+
+/* Title */
+.login-card h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 13px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Input box */
+.input-box {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+/* Input field */
+.input-box input {
+    width: 100%;
+    padding: 12px 45px 12px 38px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+
+    background: rgba(255,255,255,0.9);
+}
+
+/* Focus effect */
+.input-box input:focus {
+    box-shadow: 0 0 0 2px rgba(255,122,0,0.3);
+}
+
+/* Left icons */
+.input-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 14px;
+}
+
+/* Toggle icon */
+.toggle {
+    position: absolute;
+    right: 12%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+    font-size: 14px;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+
+    background: linear-gradient(to right, #ff7a00, #ff9a3c);
+    color: white;
+    font-size: 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+/* Bottom text */
+.bottom-text {
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.bottom-text a {
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+.bottom-text a:hover {
+    text-decoration: underline;
+}
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 📱 Mobile Fix */
+@media (max-width: 480px) {
+
+    body {
+        padding: 15px;
+        align-items: center;
+        animation: fadeIn 1s ease;
+    }
+
+    .login-card {
+        margin: auto;
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+
+    .login-card h2 {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+    }
+
+    .input-box input {
+        padding: 11px 40px 11px 35px;
+        font-size: 13px;
+    }
+
+    button {
+        padding: 11px;
+        font-size: 14px;
+    }
+}
