@@ -7,6 +7,7 @@
 
 body {
     background: #fff7f0;
+    margin: 0px;
 }
 
 #title {
@@ -15,14 +16,24 @@ body {
 }
 /* 🔥 SIDEBAR */
 .sidebar {
-    width: 220px;
+    /* width: 220px;
     height: 100vh;
     background: #fff7f0;
     position: fixed;
     padding: 20px;
     box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     transition: 0.3s;
-}
+    */
+    position: fixed;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100%;
+    background: #fff7f0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    /* transition: 0.3s; */
+} 
 
 .sidebar a {
     display: flex;
@@ -49,7 +60,8 @@ body {
 /* MAIN */
 .main {
     margin-left: 220px;
-    padding: 15px;
+    padding: 8px;
+    margin-top: 20px;
 }
 
 /* 🔥 TOP NAV */
@@ -61,7 +73,14 @@ body {
     color: white;
     padding: 1rem;
     margin-left: 220px;
-    margin-bottom: -15px;
+    /* margin-bottom: px; */
+    /* margin-top: 0px; */
+    position: fixed;
+    top: 0;
+    left: 0px; /* sidebar width */
+    right: 0;
+    z-index: 1000;
+    
     /* border-radius: 10px; */
 }
 
@@ -82,21 +101,32 @@ body {
 .search-box {
     display: flex;
     margin: 15px 0;
+    width: 100%;
 }
 
 .search-box input {
     flex: 1;
+    min-width: 0;
     padding: 10px;
     border: 1px solid #ddd;
+    outline: none;
+    background: #f3f3f3;
     border-radius: 8px 0 0 8px;
 }
 
 .search-box button {
-    background: #ff7a00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5%;
+    margin: 0;
+    padding: 10px 14px;
     border: none;
+    background: #ff7a00;
     color: white;
-    padding: 10px;
+    cursor: pointer;
     border-radius: 0 8px 8px 0;
+    flex-shrink: 0;
 }
 
 /* 🔥 CATEGORY ICON NAV */
@@ -195,8 +225,10 @@ body {
 /* 📱 MOBILE FIX */
 @media (max-width: 768px) {
 
+
     .top-nav {
-        margin-left: 0;
+        position: absolute;
+        margin-left: 0rem;
         margin-bottom: -15px;
         /* border-radius: 10px; */
     }
@@ -210,10 +242,12 @@ body {
         justify-content: space-between;
         align-items: center;
     }
-    #menu-btn {
-        display: block;
+
+    .search-box{
+        width: 100%;
     }
 
+    
     .sidebar {
         left: -220px;
         transition: 0.3s;
