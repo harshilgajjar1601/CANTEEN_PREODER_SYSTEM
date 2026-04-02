@@ -1,20 +1,66 @@
-import { useState } from "react";
-import "../../styles/user/login.css"; 
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Link, useLocation , useNavigate} from "react-router-dom";
+import "../../styles/user/login.css";
 
 function Login() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [msg, setMessage] = useState("");
+  const [type, setType] = useState("");
+  const [color, setColor] = useState("");
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+
+  useEffect(() => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn) {
+        navigate("/menu", { replace: true });
+    }
+    if (location.state && location.state.message) {
+      setMessage(location.state.message);
+      setType(location.state.type);
+    }
+  }, [location.state]);
 
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault(); // page reload stop
-    console.log("Email:", email);
-    console.log("Password:", password);
-  };
+ const handleLogin = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await axios.post("http://localhost:5000/api/auth/login", {
+      email,
+      password
+    });
+
+    if (res.data.success) {
+      setMessage(res.data.message);
+      setColor("green");
+
+      setTimeout(() => {
+
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("./menu", { replace: true });
+
+    }, 1000);
+    } else {
+        setMessage(res.data.message);
+        setColor("red");
+      }
+
+  } catch (err) {
+    setMessage("Server error");
+    setColor("red");
+  }
+};
 
   return (
     <div className="container">
@@ -53,10 +99,23 @@ function Login() {
             </span>
           </div>
 
-          <button type="submit">Login</button>
+          {/* 🔥 MESSAGE UI */}
+          {msg && (
+            <p
+              style={{
+                color: type === "success" ? "green" : "red",
+                marginBottom: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              {msg}
+            </p>
+          )}
+
+          <button type="submit"> Login</button>
 
           <p className="bottom-text">
-            Don't have an account? <a href="#">Sign up</a>
+            Don't have an account?<Link to="/register">Sign-Up</Link>
           </p>
         </form>
       </div>

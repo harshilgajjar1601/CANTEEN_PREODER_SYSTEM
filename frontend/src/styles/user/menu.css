@@ -4,10 +4,15 @@
     box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;
 }
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     background: #fff7f0;
     margin: 0px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 #title {
@@ -60,7 +65,7 @@ body {
 /* MAIN */
 .main {
     margin-left: 220px;
-    padding: 8px;
+    padding: 22px 12px;
     margin-top: 20px;
 }
 
@@ -215,6 +220,13 @@ body {
 .food-card:hover {
     transform: scale(1.04);
     box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+}
+
+.food-list,
+.food-card,
+.main {
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 @media (min-width: 1024px) {

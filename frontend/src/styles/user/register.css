@@ -12,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     background: linear-gradient(to bottom, #ff7a00, #ffffff);
-    padding: 16px;
+    /* padding: 16px; */
 }
 
 /* Container */
@@ -140,7 +140,7 @@ button:hover {
 
     body {
         align-items: center; /* center vertically */
-        padding: 12px;
+        /* padding: 12px; */
         animation: fadeIn 1s ease;
     }
 
