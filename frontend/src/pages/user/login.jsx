@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation , useNavigate} from "react-router-dom";
 import "../../styles/user/login.css";
 
 function Login() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [msg, setMessage] = useState("");
   const [type, setType] = useState("");
@@ -16,6 +17,11 @@ function Login() {
 
 
   useEffect(() => {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn) {
+        navigate("/menu", { replace: true });
+    }
     if (location.state && location.state.message) {
       setMessage(location.state.message);
       setType(location.state.type);
@@ -28,23 +34,6 @@ function Login() {
 
  const handleLogin = async (e) => {
   e.preventDefault();
-//   console.log("Buttton clicked");
-
-//   console.log("STEP 1");
-
-// try {
-//   console.log("STEP 2");
-
-//   const res = await axios.post("http://localhost:5000/api/auth/login", {
-//     email,
-//     password
-//   });
-
-//   console.log("STEP 3", res);
-
-// } catch (err) {
-//   console.log("ERROR:", err);
-// }
 
   try {
     const res = await axios.post("http://localhost:5000/api/auth/login", {
@@ -57,13 +46,15 @@ function Login() {
       setColor("green");
 
       setTimeout(() => {
-        window.location.href = "./menu";
-      }, 2000);
 
+      localStorage.setItem("isLoggedIn", "true");
+      navigate("./menu", { replace: true });
+
+    }, 1000);
     } else {
-      setMessage(res.data.message);
-      setColor("red");
-    }
+        setMessage(res.data.message);
+        setColor("red");
+      }
 
   } catch (err) {
     setMessage("Server error");

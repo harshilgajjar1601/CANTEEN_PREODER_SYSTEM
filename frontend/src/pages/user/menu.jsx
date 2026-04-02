@@ -5,8 +5,28 @@ import fries from "../../assets/Images/fries.jpg";
 import coffee from "../../assets/Images/coffee.jpeg";
 import dosa from "../../assets/Images/dosa.webp";
 import paneerPizza from "../../assets/Images/paneerPizza.jpg";  
+import { useNavigate } from "react-router-dom";
+import {useEffect } from "react";
 
 function Menu() {
+
+  useEffect(() => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  if (!isLoggedIn) {
+    navigate("/", { replace: true });
+  }
+}, []);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // 🔥 login remove
+    localStorage.removeItem("isLoggedIn");
+
+    // 🔥 login page par mokal
+    navigate("/", { replace: true });
+  };
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");
@@ -26,6 +46,7 @@ function Menu() {
         <a href="#"><i className="fa fa-utensils"></i> Orders</a>
         <a href="#"><i className="fa fa-shopping-cart"></i> Cart</a>
         <a href="#"><i className="fa fa-user"></i> Profile</a>
+        <a href="#" onClick={handleLogout}><i className="fa fa-sign-out" ></i> Logout</a>
       </div>
 
       {/* Top Nav */}
