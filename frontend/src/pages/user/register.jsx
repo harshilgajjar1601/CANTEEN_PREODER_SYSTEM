@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"; 
 import { useState } from "react";
 import "../../styles/user/register.css";
 
@@ -11,11 +12,35 @@ function Register() {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
+  // ✅ FIXED API CALL
+  const handleRegister = async (e) => {
+    e.preventDefault(); // ❗ page reload stop kare
+
+    const data = {
+      name,
+      email,
+      password,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      console.log(result);
+
+      if (result.message) {
+        alert(result.message);
+      }
+
+    } catch (error) {
+      console.log("Error:", error);
+    }
   };
 
   return (
@@ -68,7 +93,7 @@ function Register() {
           <button type="submit">Sign Up</button>
 
           <p className="bottom-text">
-            Already have an account? <a href="#">Login</a>
+            Already have an account?<Link to="/">Login</Link>
           </p>
         </form>
       </div>
