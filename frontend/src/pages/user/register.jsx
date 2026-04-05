@@ -84,7 +84,7 @@ function Register() {
             <span className="toggle" onClick={togglePassword}>
               <i
                 className={`fa ${
-                  passwordVisible ? "fa-eye-slash" : "fa-eye"
+                  passwordVisible ? "fa-eye" : "fa-eye-slash"
                 }`}
               ></i>
             </span>

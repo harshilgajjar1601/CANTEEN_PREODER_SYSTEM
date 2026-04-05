@@ -1,0 +1,72 @@
+.sidebar {
+    position: fixed;
+    padding: 20px;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100%;
+    background: #fff7f0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+} 
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+    color: #333;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+/* 🔥 HOVER ORANGE */
+.sidebar a:hover {
+    background: #ff7a00;
+    color: white;
+}
+
+/* ===== MOBILE SIDEBAR ===== */
+@media (max-width: 768px) {
+  
+  /* Sidebar hidden by default */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 220px;
+    height: 100vh;
+    background: #f3ede7;
+    z-index: 2000;
+    transition: 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  }
+
+  /* Sidebar open */
+  .sidebar.active {
+    left: 0;
+  }
+
+  /* Overlay background */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1500;
+  }
+
+  /* Top navbar full width */
+  .top-nav {
+    margin-left: 0;
+  }
+
+  /* Main content full width */
+  .main,
+  .cart-content {
+    margin-left: 0;
+  }
+}

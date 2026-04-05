@@ -1,32 +1,37 @@
 import "../../styles/user/menu.css";
+import Sidebar from "../../components/sidebar";
+import Navbar from "../../components/navbar";
 import burger from "../../assets/Images/burger.webp";
 import pizza from "../../assets/Images/pizza.jpeg";
 import fries from "../../assets/Images/fries.jpg";
 import coffee from "../../assets/Images/coffee.jpeg";
 import dosa from "../../assets/Images/dosa.webp";
 import paneerPizza from "../../assets/Images/paneerPizza.jpg";  
-import { useNavigate } from "react-router-dom";
-import {useEffect } from "react";
+import { useNavigate , Link} from "react-router-dom";
+import  { jwtDecode } from "jwt-decode";
+import { useState, useEffect , useContext} from "react";
+import { CartContext } from "../../context/CartContext";
+
+
+
 
 function Menu() {
-
+  const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   useEffect(() => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const token = localStorage.getItem("token");
 
-  if (!isLoggedIn) {
+  // console.log("MENU TOKEN:", token);
+
+  if (!token) {
     navigate("/", { replace: true });
   }
-}, []);
-
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // 🔥 login remove
-    localStorage.removeItem("isLoggedIn");
-
-    // 🔥 login page par mokal
-    navigate("/", { replace: true });
-  };
+  else {
+    const decoded = jwtDecode(token);
+    setUsername(decoded.name);
+  }
+}, [navigate]);
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");
@@ -35,7 +40,9 @@ function Menu() {
 
   return (
     <>
-      {/* Sidebar */}
+
+    <Sidebar toggleSidebar={toggleSidebar} />
+      {/* Sidebar
       <div className="sidebar" id="sidebar">
         <div className="menuTitle">
           <h3>Menu</h3>
@@ -43,24 +50,27 @@ function Menu() {
         </div>
 
         <a href="#"><i className="fa fa-home"></i> Home</a>
+        <Link to="/cart">
+          <i className="fa fa-shopping-cart"></i> Cart
+        </Link>
         <a href="#"><i className="fa fa-utensils"></i> Orders</a>
-        <a href="#"><i className="fa fa-shopping-cart"></i> Cart</a>
         <a href="#"><i className="fa fa-user"></i> Profile</a>
         <a href="#" onClick={handleLogout}><i className="fa fa-sign-out" ></i> Logout</a>
-      </div>
+      </div> */}
 
       {/* Top Nav */}
-      <div className="top-nav">
+      <Navbar username={username} toggleSidebar={toggleSidebar} />
+      {/* <div className="top-nav">
         <div className="user-profile">
           <i className="fa fa-bars" id="menu-btn"onClick={toggleSidebar}></i>
           <i className="fa-solid fa-user"></i>
-          <span className="username">Harshil</span>
+          <span className="username"> Welcome...! {username}</span>
         </div>
         <div className="cart">
           <i className="fa fa-shopping-cart"></i>
           <span>2</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Main */}
       <div className="main">
@@ -91,119 +101,119 @@ function Menu() {
             <img src={burger} alt="Burger" />
             <h4>Burger</h4>
             <p>₹150</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 1, name: "Burger", price: 150 , image: burger })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
             <img src={pizza} alt="Pizza" />
             <h4>Pizza</h4>
             <p>₹120</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 2, name: "Pizza", price: 120 , image: pizza })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
             <img src={fries} alt="French Fries" />
             <h4>French Fries</h4>
             <p>₹90</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 3, name: "French Fries", price: 90 , image: fries })}>Add to Cart</button>
           </div>
 
           <div className="food-card drink">
             <img src={coffee} alt="Cold Coffee" />
             <h4>Cold Coffee</h4>
             <p>₹80</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 4, name: "Cold Coffee", price: 80 , image: coffee })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
             <img src={dosa} alt="Masala Dosa" />
             <h4>Masala Dosa</h4>
             <p>₹100</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 5, name: "Masala Dosa", price: 100 , image: dosa })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
             <img src={paneerPizza} alt="Paneer Pizza" />
             <h4>Paneer Pizza</h4>
             <p>₹150</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 6, name: "Paneer Pizza", price: 150 , image: paneerPizza })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Veg Sandwich" />
             <h4>Veg Sandwich</h4>
             <p>₹60</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 7, name: "Veg Sandwich", price: 60 , image: vegSandwich })}>Add to Cart</button>
           </div>
 
           <div className="food-card drink">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Tea" />
             <h4>Tea</h4>
             <p>₹20</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 8, name: "Tea", price: 20 , image: tea })}>Add to Cart</button>
           </div>
 
           <div className="food-card drink">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Coffee" />
             <h4>Coffee</h4>
             <p>₹30</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 9, name: "Coffee", price: 30 , image: coffee })}>Add to Cart</button>
           </div>
 
           <div className="food-card drink">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Chocolate Shake" />
             <h4>Chocolate Shake</h4>
             <p>₹120</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 10, name: "Chocolate Shake", price: 120 , image: chocolateShake })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Veg Noodles" />
             <h4>Veg Noodles</h4>
             <p>₹110</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 11, name: "Veg Noodles", price: 110 , image: vegNoodles })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Manchurian" />
             <h4>Manchurian</h4>
             <p>₹130</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 12, name: "Manchurian", price: 130 , image: manchurian })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Pav Bhaji" />
             <h4>Pav Bhaji</h4>
             <p>₹120</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 13, name: "Pav Bhaji", price: 120 , image: pavBhaji })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Samosa" />
             <h4>Samosa</h4>
             <p>₹25</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 14, name: "Samosa", price: 25 , image: samosa })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Kachori" />
             <h4>Kachori</h4>
             <p>₹30</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 15, name: "Kachori", price: 30 , image: kachori })}>Add to Cart</button>
           </div>
 
           <div className="food-card">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Ice Cream" />
             <h4>Ice Cream</h4>
             <p>₹100</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 16, name: "Ice Cream", price: 100 , image: iceCream })}  >Add to Cart</button>
           </div>
 
           <div className="food-card drink">
-            <img src="https://via.placeholder.com/150" alt="" />
+            <img src={"#"} alt="Fruit Juice" />
             <h4>Fruit Juice</h4>
             <p>₹70</p>
-            <button>Add to Cart</button>
+            <button onClick={() => addToCart({ id: 17, name: "Fruit Juice", price: 70 , image: fruitJuice })}>Add to Cart</button>
           </div>
 
         </div>

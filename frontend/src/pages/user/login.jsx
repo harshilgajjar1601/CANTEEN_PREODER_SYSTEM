@@ -17,9 +17,9 @@ function Login() {
 
 
   useEffect(() => {
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      const token = localStorage.getItem("token");
 
-    if (isLoggedIn) {
+    if (token) {
         navigate("/menu", { replace: true });
     }
     if (location.state && location.state.message) {
@@ -42,15 +42,14 @@ function Login() {
     });
 
     if (res.data.success) {
+      localStorage.setItem("token", res.data.token);
       setMessage(res.data.message);
       setColor("green");
 
       setTimeout(() => {
-
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("./menu", { replace: true });
-
-    }, 1000);
+        navigate("./menu", { replace: true });
+      }, 2000);
+      
     } else {
         setMessage(res.data.message);
         setColor("red");
@@ -93,7 +92,7 @@ function Login() {
             <span className="toggle" onClick={togglePassword}>
               <i
                 className={`fa ${
-                  passwordVisible ? "fa-eye-slash" : "fa-eye"
+                  passwordVisible ? "fa-eye" : "fa-eye-slash"
                 }`}
               ></i>
             </span>

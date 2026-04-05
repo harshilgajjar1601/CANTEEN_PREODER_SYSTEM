@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/user/login";
 import Register from "./pages/user/register";
 import Menu from "./pages/user/menu";
+import Cart from "./pages/user/cart";
+
+
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
 
         {/* After login */}
         <Route path="/menu" element={<Menu />} />
+
+        {/* Cart page */}
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </BrowserRouter>
   );
