@@ -1,11 +1,24 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CartContext } from "../../context/CartContext";
 import Sidebar from "../../components/sidebar";
-import "../../styles/user/cart.css";
 import Navbar from "../../components/navbar";
+import "../../styles/user/cart.css";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
+    const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // 🔥 NEW STATES
+    const [showPayment, setShowPayment] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handlePlaceOrder = () => {
+      setShowPayment(true);
+    };
 
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity,0);
 
@@ -14,6 +27,39 @@ function Cart() {
       sidebar.classList.toggle("active");
     };
 
+    // 🔥 ORDER ID + PAYMENT LOGIC
+    const generateOrderId = () => {
+      return "ORD-" + Date.now();
+    };
+
+    const handlePayment = () => {
+      setLoading(true);
+      // setShowPayment(false);
+      // setShowSuccess(true);
+
+      setTimeout(() => {
+        setShowPayment(false);
+        setShowSuccess(true);
+
+        const orderId = generateOrderId();
+
+        const orderData = {
+          orderId,
+          items: cart,
+          amount: total,
+          status: "Pending"
+        };
+
+        localStorage.setItem("latestOrder", JSON.stringify(orderData));
+
+        setLoading(false);
+
+        setTimeout(() => {
+          setShowSuccess(false);
+          navigate("/cart", { replace: true });
+        }, 2000);
+      }, 1500);
+    };
 
   return (
     <div className="cart-container">
@@ -54,11 +100,52 @@ function Cart() {
 
             <div className="cart-footer">
               <h3>Total: ₹{total}</h3>
-              <button className="order-btn">Place Order</button>
+              <button className="order-btn" onClick={handlePlaceOrder}>
+                Place order
+              </button>
             </div>
           </>
         )}
         </div>
+
+        {/* 🔥 PAYMENT MODAL */}
+        {showPayment && (
+          <div className="overlay">
+            <div className="modal">
+
+              <h2>Payment</h2>
+
+              {cart.map((item, index) => (
+                <div key={index} className="payment-item">
+                  <span>{item.name} x {item.quantity}</span>
+                  <span>₹{item.price * item.quantity}</span>
+                </div>
+              ))}
+
+              <hr />
+
+              <h3>Total: ₹{total}</h3>
+              <div className="paymentBtns">
+                <button className="pay-btn" onClick={handlePayment} disabled={loading}>
+                  {loading ? <div className="loader"></div> : "Make Payment"}
+                </button>
+                <button className="cancel-btn" onClick={() => setShowPayment(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 🔥 SUCCESS POPUP */}
+        {showSuccess && (
+          <div className="overlay">
+            <div className="modal success-modal">
+              <h2>✅ Payment Successful</h2>
+            </div>
+          </div>
+        )}
+
     </div>
   );
 };

@@ -40,37 +40,11 @@ function Menu() {
 
   return (
     <>
-
-    <Sidebar toggleSidebar={toggleSidebar} />
-      {/* Sidebar
-      <div className="sidebar" id="sidebar">
-        <div className="menuTitle">
-          <h3>Menu</h3>
-          <i className="fa-solid fa-x" onClick={toggleSidebar}></i>
-        </div>
-
-        <a href="#"><i className="fa fa-home"></i> Home</a>
-        <Link to="/cart">
-          <i className="fa fa-shopping-cart"></i> Cart
-        </Link>
-        <a href="#"><i className="fa fa-utensils"></i> Orders</a>
-        <a href="#"><i className="fa fa-user"></i> Profile</a>
-        <a href="#" onClick={handleLogout}><i className="fa fa-sign-out" ></i> Logout</a>
-      </div> */}
-
+    
+      {/* Sidebar */}
+     <Sidebar toggleSidebar={toggleSidebar} />
       {/* Top Nav */}
       <Navbar username={username} toggleSidebar={toggleSidebar} />
-      {/* <div className="top-nav">
-        <div className="user-profile">
-          <i className="fa fa-bars" id="menu-btn"onClick={toggleSidebar}></i>
-          <i className="fa-solid fa-user"></i>
-          <span className="username"> Welcome...! {username}</span>
-        </div>
-        <div className="cart">
-          <i className="fa fa-shopping-cart"></i>
-          <span>2</span>
-        </div>
-      </div> */}
 
       {/* Main */}
       <div className="main">

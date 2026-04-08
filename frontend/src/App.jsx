@@ -21,6 +21,9 @@ function App() {
 
         {/* Cart page */}
         <Route path="/cart" element={<Cart />} />
+
+         {/* Orders page */}
+         {/* <Route path="/orders" element={<Orders />} /> */}
       </Routes>
     </BrowserRouter>
   );

@@ -16,19 +16,16 @@ function Sidebar({ toggleSidebar }) {
         <i className="fa-solid fa-x" onClick={toggleSidebar}></i>
       </div>
 
-      <Link to="/menu">
+      <Link to="/menu" relace>
         <i className="fa fa-home"></i> Home
       </Link>
 
-      <Link to="/cart">
+      <Link to="/cart" replace>
         <i className="fa fa-shopping-cart"></i> Cart
       </Link>
 
       <Link to="/orders">
         <i className="fa fa-utensils"></i> Orders
-      </Link>
-      <Link to="/profile">
-        <i className="fa fa-user"></i> Profile
       </Link>
 
       <a href="#" onClick={handleLogout}>

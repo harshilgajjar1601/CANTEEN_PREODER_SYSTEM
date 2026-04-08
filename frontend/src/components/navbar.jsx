@@ -22,7 +22,7 @@ function Navbar({ username, toggleSidebar }) {
         <span className="username">Welcome...! {username}</span>
       </div>
 
-      <div className="cart" onClick={() => navigate("/cart")}>
+      <div className="cart" onClick={() => navigate("/cart", { replace: true })}>
         <i className="fa fa-shopping-cart"></i>
         <span>{totalItems}</span>
       </div>
