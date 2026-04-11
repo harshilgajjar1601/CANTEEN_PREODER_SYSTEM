@@ -3,6 +3,7 @@ import Login from "./pages/user/login";
 import Register from "./pages/user/register";
 import Menu from "./pages/user/menu";
 import Cart from "./pages/user/cart";
+import Orders from "./pages/user/orders";
 
 
 
@@ -23,7 +24,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
 
          {/* Orders page */}
-         {/* <Route path="/orders" element={<Orders />} /> */}
+         <Route path="/orders" element={<Orders />} />
       </Routes>
     </BrowserRouter>
   );

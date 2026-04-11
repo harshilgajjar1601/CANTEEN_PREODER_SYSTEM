@@ -1,0 +1,76 @@
+.orders-container {
+  display: flex;
+}
+
+/* CONTENT */
+.orders-content {
+  margin: 70px 0 0 220px;
+  padding: 20px;
+  width: 100%;
+}
+
+/* TITLE */
+.orders-content h2 {
+  margin-bottom: 20px;
+}
+
+/* TABLE */
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background: #ff8800;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* STATUS COLORS */
+.status {
+  font-weight: bold;
+}
+
+.status.pending {
+  color: orange;
+}
+
+.status.preparing {
+  color: blue;
+}
+
+.status.ready {
+  color: green;
+}
+
+/* EMPTY TEXT */
+.orders-content p {
+  color: gray;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+  .orders-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+}
