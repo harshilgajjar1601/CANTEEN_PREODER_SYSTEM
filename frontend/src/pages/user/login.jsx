@@ -18,6 +18,7 @@ function Login() {
 
   useEffect(() => {
       const token = localStorage.getItem("token");
+      const email = localStorage.getItem("email");
 
     if (token) {
         navigate("/menu", { replace: true });
@@ -32,10 +33,12 @@ function Login() {
     setPasswordVisible(!passwordVisible);
   };
 
+
  const handleLogin = async (e) => {
   e.preventDefault();
 
   try {
+    
     const res = await axios.post("http://localhost:5000/api/auth/login", {
       email,
       password
@@ -43,11 +46,12 @@ function Login() {
 
     if (res.data.success) {
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("email", res.data.user.email);
       setMessage(res.data.message);
       setColor("green");
 
       setTimeout(() => {
-        navigate("./menu", { replace: true });
+        navigate("/menu", { replace: true });
       }, 2000);
       
     } else {

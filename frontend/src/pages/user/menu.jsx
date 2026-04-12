@@ -1,12 +1,23 @@
-import "../../styles/user/menu.css";
-import Sidebar from "../../components/sidebar";
-import Navbar from "../../components/navbar";
 import burger from "../../assets/Images/burger.webp";
 import pizza from "../../assets/Images/pizza.jpeg";
 import fries from "../../assets/Images/fries.jpg";
 import coffee from "../../assets/Images/coffee.jpeg";
 import dosa from "../../assets/Images/dosa.webp";
 import paneerPizza from "../../assets/Images/paneerPizza.jpg";  
+// import vegSandwich from "../../assets/Images/vegSandwich.jpeg";
+// import tea from "../../assets/Images/tea.jpeg";
+// import chocolateShake from "../../assets/Images/chocolateShake.jpeg";
+// import vegNoodles from "../../assets/Images/vegNoodles.webp";
+// import manchurian from "../../assets/Images/manchurian.jpeg";
+// import pavBhaji from "../../assets/Images/pavBhaji.jpeg";
+// import samosa from "../../assets/Images/samosa.jpeg";
+// import kachori from "../../assets/Images/kachori.jpeg";
+// import iceCream from "../../assets/Images/iceCream.jpeg";
+// import fruitJuice from "../../assets/Images/fruitJuice.webp";
+
+import "../../styles/user/menu.css";
+import Sidebar from "../../components/sidebar";
+import Navbar from "../../components/navbar";
 import { useNavigate , Link} from "react-router-dom";
 import  { jwtDecode } from "jwt-decode";
 import { useState, useEffect , useContext} from "react";

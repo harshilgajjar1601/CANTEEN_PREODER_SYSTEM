@@ -12,14 +12,14 @@ function Orders() {
   };
 
   useEffect(() => {
-    const name = localStorage.getItem("name");
+    const email = localStorage.getItem("email");
 
-    if (!name) {
-      console.log("Name not found ❌");
+    if (!email) {
+      console.log("Email not found ❌");
       return;
     }
 
-    fetch(`http://localhost:5000/api/orders/user/${name}`)
+    fetch(`http://localhost:5000/api/orders?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Orders Data 🔥", data);

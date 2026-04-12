@@ -6,7 +6,7 @@ import "../../styles/user/cart.css";
 import { useNavigate } from "react-router-dom";
 
 function Cart() {
-    const { cart, addToCart, removeFromCart } = useContext(CartContext);
+    const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -29,37 +29,52 @@ function Cart() {
 
     // 🔥 ORDER ID + PAYMENT LOGIC
     const generateOrderId = () => {
-      return "ORD-" + Date.now();
+      return "ORD-" + Math.floor(1000 + Math.random() * 9000);
     };
 
-    const handlePayment = () => {
-      setLoading(true);
-      // setShowPayment(false);
-      // setShowSuccess(true);
+    const handlePayment = async () => {
+  setLoading(true);
 
-      setTimeout(() => {
-        setShowPayment(false);
-        setShowSuccess(true);
+  setTimeout(async () => {
+    setShowPayment(false);
+    setShowSuccess(true);
 
-        const orderId = generateOrderId();
+    const orderId = generateOrderId();
+    const email = localStorage.getItem("email"); // 🔥 IMPORTANT
 
-        const orderData = {
-          orderId,
-          items: cart,
+    try {
+      await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          order_id: orderId,
+          items: JSON.stringify(cart), // 👈 stringify
           amount: total,
-          status: "Pending"
-        };
+          status: "Pending",
+          email: email
+        })
+      });
 
-        localStorage.setItem("latestOrder", JSON.stringify(orderData));
+      console.log("Order Saved ✅");
 
-        setLoading(false);
+      clearCart(); // Clear cart after order is placed
 
-        setTimeout(() => {
-          setShowSuccess(false);
-          navigate("/cart", { replace: true });
-        }, 2000);
-      }, 1500);
-    };
+    } catch (err) {
+      console.log("Order Save Error ❌", err);
+    }
+
+    
+    setLoading(false);
+    
+    setTimeout(() => {
+      setShowSuccess(false);
+      navigate("/orders", { replace: true });
+    }, 2000);
+
+  }, 1500);
+};
 
   return (
     <div className="cart-container">

@@ -16,7 +16,7 @@ function Sidebar({ toggleSidebar }) {
         <i className="fa-solid fa-x" onClick={toggleSidebar}></i>
       </div>
 
-      <Link to="/menu" relace>
+      <Link to="/menu" replace>
         <i className="fa fa-home"></i> Home
       </Link>
 

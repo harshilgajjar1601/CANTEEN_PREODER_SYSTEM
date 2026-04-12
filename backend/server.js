@@ -13,9 +13,14 @@ app.get("/", (req, res) => {
     res.send("Backend running 🚀");
 });
 
+
+
 // routes (aagad use thase)
 const authRoutes = require("./routes/auth");
+const orderRoutes = require("./routes/orders");
+
 app.use("/api/auth", authRoutes);
+app.use("/api/orders", orderRoutes);
 
 // server start
 const PORT = 5000;
