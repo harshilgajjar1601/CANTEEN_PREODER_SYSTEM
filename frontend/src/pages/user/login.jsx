@@ -120,6 +120,9 @@ function Login() {
           <p className="bottom-text">
             Don't have an account?<Link to="/register">Sign-Up</Link>
           </p>
+          <p className="bottom-text">
+            Admin login..!<Link to="/admin/adminLogin">Login</Link>
+          </p>
         </form>
       </div>
     </div>

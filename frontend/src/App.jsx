@@ -4,6 +4,8 @@ import Register from "./pages/user/register";
 import Menu from "./pages/user/menu";
 import Cart from "./pages/user/cart";
 import Orders from "./pages/user/orders";
+import AdminLogin from "./pages/admin/adminLogin";
+import AdminDashboard from "./pages/admin/adminDashboard";
 
 
 
@@ -25,6 +27,12 @@ function App() {
 
          {/* Orders page */}
          <Route path="/orders" element={<Orders />} />
+
+          {/* Admin routes */}
+         <Route path="/admin/adminLogin" element={<AdminLogin />} />
+
+          {/* Admin dashboard */}
+         <Route path="/admin/adminDashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
