@@ -6,10 +6,15 @@ import "../../styles/user/login.css";
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [msg, setMsg] = useState("");
   const [msgType, setMsgType] = useState("");
 
   const navigate = useNavigate();
+
+  const togglePassword = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -61,13 +66,20 @@ function AdminLogin() {
 
               <div className="input-box password-box">
                   <input
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   placeholder="Password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   />
                   <i className="fa fa-lock"></i>
+                  <span className="toggle" onClick={togglePassword}>
+                    <i
+                      className={`fa ${
+                        passwordVisible ? "fa-eye" : "fa-eye-slash"
+                      }`}
+                    ></i>
+                  </span>
               </div>
 
               {msg && (

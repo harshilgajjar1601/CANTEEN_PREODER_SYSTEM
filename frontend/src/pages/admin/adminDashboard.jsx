@@ -1,18 +1,46 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/admin/dashboard.css";
 import "../../styles/admin/adminSidebar.css";
 
-const orders = [
-  { id: 101, customer: "John Doe", total: 350, status: "Preparing" },
-  { id: 102, customer: "Ananya Shah", total: 220, status: "Pending" },
-  { id: 103, customer: "Rohit Patel", total: 180, status: "Completed" },
-  { id: 104, customer: "Meena Desai", total: 420, status: "Pending" },
-];
+const STATUS_OPTIONS = ["Pending", "Preparing", "Ready", "Picked Up"];
+
+const formatOrderId = (orderId) => {
+  if (!orderId) {
+    return "";
+  }
+
+  if (orderId.startsWith("ORD #")) {
+    return orderId;
+  }
+
+  return orderId.replace(/^ORD[-\s]*/, "ORD #");
+};
+
+const normalizeStatus = (status) => {
+  if (!status) {
+    return "Pending";
+  }
+
+  return STATUS_OPTIONS.includes(status) ? status : "Pending";
+};
+
+const statusClass = (status) =>
+  normalizeStatus(status).toLowerCase().replace(/\s+/g, "-");
+
+const parseItems = (items) => {
+  try {
+    return typeof items === "string" ? JSON.parse(items) : items || [];
+  } catch {
+    return [];
+  }
+};
 
 export default function AdminDashboard() {
 
   const [isOpen, setIsOpen] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -24,9 +52,62 @@ export default function AdminDashboard() {
     navigate("/", { replace: true });
   };
 
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/orders");
+      const data = await res.json();
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.log("Admin orders fetch error:", error);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+
+    const interval = setInterval(fetchOrders, 15000);
+
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
+
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/admin/orders/${orderId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.success) {
+        console.log("Status update failed:", data.message);
+        return;
+      }
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId ? { ...order, status } : order
+        )
+      );
+    } catch (error) {
+      console.log("Status update error:", error);
+    }
+  };
+
   const totalOrders = orders.length;
   const pendingOrders = orders.filter(
-    (order) => order.status === "Pending"
+    (order) => normalizeStatus(order.status) === "Pending"
   ).length;
 
   return (
@@ -89,22 +170,48 @@ export default function AdminDashboard() {
           </div>
 
           <div className="orders-list">
-            {orders.map((order) => (
-              <div className="order-card" key={order.id}>
-                <div className="order-info">
-                  <span className="order-id">Order #{order.id}</span>
-                  <p>{order.customer}</p>
-                  <small>₹{order.total}</small>
-                </div>
-
-                <div className="order-actions">
-                  <span className={`status ${order.status.toLowerCase()}`}>
-                    {order.status}
-                  </span>
-                  <button>Details</button>
-                </div>
+            {loading && <p className="empty-orders">Loading orders...</p>}
+            {!loading && orders.length === 0 && (
+              <div className="empty-state">
+                <h3>No orders yet</h3>
+                <p>New customer orders will appear here as soon as they are placed.</p>
               </div>
-            ))}
+            )}
+
+            {orders.map((order) => {
+              const items = parseItems(order.items);
+              const status = normalizeStatus(order.status);
+
+              return (
+                <div className="order-card" key={order.id}>
+                  <div className="order-info">
+                    <span className="order-id">{formatOrderId(order.order_id)}</span>
+                    <p>{order.customer_name || order.email}</p>
+                    <small>
+                      {items.map((item) => `${item.name} x ${item.quantity}`).join(", ")}
+                    </small>
+                    <strong>₹{order.amount}</strong>
+                  </div>
+
+                  <div className="order-actions">
+                    <span className={`status ${statusClass(status)}`}>
+                      {status}
+                    </span>
+                    <select
+                      className="status-select"
+                      value={status}
+                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                    >
+                      {STATUS_OPTIONS.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
         </div>

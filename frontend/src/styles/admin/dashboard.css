@@ -134,6 +134,14 @@
   box-shadow: var(--shadow-sm);
 }
 
+.empty-state {
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255, 248, 240, 0.8);
+  border: 1px dashed rgba(255, 122, 0, 0.2);
+  color: var(--muted);
+}
+
 .order-card {
   display: flex;
   justify-content: space-between;
@@ -172,15 +180,48 @@
   font-weight: 600;
 }
 
+.order-info strong {
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
 .order-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .status {
   margin-right: 0;
+}
+
+.status-select {
+  min-width: 150px;
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 122, 0, 0.18);
+  background: #ffffff;
+  color: var(--text);
+  font-weight: 700;
+  outline: none;
+}
+
+.status-select:focus {
+  border-color: rgba(255, 122, 0, 0.35);
+  box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.12);
+}
+
+.status.picked-up {
+  background: rgba(55, 95, 172, 0.12);
+  color: #375fac;
+}
+
+.empty-orders {
+  color: var(--muted);
+  padding: 8px 4px;
 }
 
 .order-actions button {
@@ -232,5 +273,9 @@
 
   .order-actions {
     justify-content: space-between;
+  }
+
+  .status-select {
+    width: 100%;
   }
 }

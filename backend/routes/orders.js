@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+const VALID_STATUSES = ["Pending", "Preparing", "Ready", "Picked Up"];
+
+const normalizeOrder = (order) => ({
+  ...order,
+  status: VALID_STATUSES.includes(order.status) ? order.status : "Pending",
+});
+
 
 // 🔥 GET orders by email
 router.get("/", (req, res) => {
@@ -20,19 +27,20 @@ router.get("/", (req, res) => {
     }
 
     console.log("ORDERS FETCHED ✅:", result);
-    res.json(result);
+    res.json(result.map(normalizeOrder));
   });
 });
 
 
 // 🔥 POST - save order
 router.post("/", (req, res) => {
-  const { order_id, items, amount, status, email } = req.body;
+  const { order_id, items, amount, email } = req.body;
+  const status = "Pending";
 
   // Debug
   console.log("ORDER DATA 🔥:", req.body);
 
-  if (!order_id || !items || !amount || !status || !email) {
+  if (!order_id || !items || !amount || !email) {
     return res.json({
       success: false,
       message: "All fields required"
