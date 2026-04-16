@@ -43,6 +43,9 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("All");
   const [orderIdSearch, setOrderIdSearch] = useState("");
+  const [todayRevenue, setTodayRevenue] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [todayOrders, setTodayOrders] = useState(0);
   const navigate = useNavigate();
 
   const filteredOrders = orders.filter(order => {
@@ -51,6 +54,26 @@ export default function AdminDashboard() {
       (order.order_id && order.order_id.toLowerCase().includes(orderIdSearch.toLowerCase()));
     return matchesStatus && matchesOrderId;
   });
+
+  const calculateRevenue = useCallback(() => {
+    const today = new Date().toDateString();
+    
+    const todayData = orders.filter(order => 
+      new Date(order.created_at).toDateString() === today
+    );
+    
+    const todayTotal = todayData.reduce((sum, order) => 
+      sum + (parseFloat(order.amount) || 0), 0
+    );
+    
+    const total = orders.reduce((sum, order) => 
+      sum + (parseFloat(order.amount) || 0), 0
+    );
+    
+    setTodayRevenue(todayTotal);
+    setTotalRevenue(total);
+    setTodayOrders(todayData.length);
+  }, [orders]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -84,6 +107,10 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, [fetchOrders]);
 
+  useEffect(() => {
+    calculateRevenue();
+  }, [orders, calculateRevenue]);
+
   const updateOrderStatus = async (orderId, status) => {
     try {
       const res = await fetch(
@@ -114,11 +141,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const totalOrders = orders.length;
-  const pendingOrders = orders.filter(
-    (order) => normalizeStatus(order.status) === "Pending"
-  ).length;
-
   return (
     <div className="admin-container">
 
@@ -133,8 +155,7 @@ export default function AdminDashboard() {
 
         <ul>
           <li onClick={toggleSidebar}>📊 Dashboard</li>
-          <li onClick={toggleSidebar}>📦 Orders</li>
-          <li onClick={toggleSidebar}>🍽 Menu</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/menu"); }}>🍽️ Menu</li>
           <li onClick={toggleSidebar}>👤 Users</li>
           <li onClick={handleLogout}>🚪 Logout</li>
         </ul>
@@ -163,6 +184,34 @@ export default function AdminDashboard() {
               <span className="section-kicker">Overview</span>
               <h3 className="welcome">Welcome, Admin!</h3>
               <p>Track incoming work, keep the queue moving, and review active orders.</p>
+            </div>
+          </section>
+
+          <section className="revenue-overview">
+            <h3>💰 Revenue Overview</h3>
+            
+            <div className="revenue-cards">
+              <div className="revenue-card today">
+                <div className="revenue-icon">📅</div>
+                <div className="revenue-info">
+                  <span className="revenue-label">Today's Revenue</span>
+                  <span className="revenue-amount">
+                    ₹{todayRevenue.toLocaleString('en-IN')}
+                  </span>
+                  <span className="revenue-count">{todayOrders} orders</span>
+                </div>
+              </div>
+              
+              <div className="revenue-card total">
+                <div className="revenue-icon">💎</div>
+                <div className="revenue-info">
+                  <span className="revenue-label">Total Revenue</span>
+                  <span className="revenue-amount">
+                    ₹{totalRevenue.toLocaleString('en-IN')}
+                  </span>
+                  <span className="revenue-count">{orders.length} orders</span>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -233,6 +282,18 @@ export default function AdminDashboard() {
                   Clear Filters
                 </button>
               )}
+            </div>
+          </div>
+
+          <div className="stats">
+            <div className="card">
+              <p>Total Orders</p>
+              <h2>{orders.length}</h2>
+            </div>
+
+            <div className="card" id="pending-orders">
+              <p>Pending Orders</p>
+              <h2>{orders.filter((order) => normalizeStatus(order.status) === "Pending").length}</h2>
             </div>
           </div>
 
