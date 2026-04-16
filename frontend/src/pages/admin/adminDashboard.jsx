@@ -41,7 +41,16 @@ export default function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [orderIdSearch, setOrderIdSearch] = useState("");
   const navigate = useNavigate();
+
+  const filteredOrders = orders.filter(order => {
+    const matchesStatus = statusFilter === "All" || normalizeStatus(order.status) === statusFilter;
+    const matchesOrderId = orderIdSearch === "" || 
+      (order.order_id && order.order_id.toLowerCase().includes(orderIdSearch.toLowerCase()));
+    return matchesStatus && matchesOrderId;
+  });
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -157,15 +166,73 @@ export default function AdminDashboard() {
             </div>
           </section>
 
-          <div className="stats">
-            <div className="card">
-              <p>Total Orders</p>
-              <h2>{totalOrders}</h2>
+          <div className="filter-controls">
+            <div className="search-filter">
+              <i className="fa fa-search"></i>
+              <input
+                type="text"
+                placeholder="Search by Order ID..."
+                value={orderIdSearch}
+                onChange={(e) => setOrderIdSearch(e.target.value)}
+              />
+              {orderIdSearch && (
+                <button onClick={() => setOrderIdSearch("")}>
+                  <i className="fa fa-times"></i>
+                </button>
+              )}
             </div>
 
-            <div className="card" id="pending-orders">
-              <p>Pending Orders</p>
-              <h2>{pendingOrders}</h2>
+            <div className="status-filter">
+              <span className="filter-label">Status:</span>
+              <div className="status-buttons">
+                <button
+                  className={`status-btn ${statusFilter === "All" ? "active" : ""}`}
+                  onClick={() => setStatusFilter("All")}
+                >
+                  All
+                </button>
+                <button
+                  className={`status-btn ${statusFilter === "Pending" ? "active" : ""}`}
+                  onClick={() => setStatusFilter("Pending")}
+                >
+                  Pending
+                </button>
+                <button
+                  className={`status-btn ${statusFilter === "Preparing" ? "active" : ""}`}
+                  onClick={() => setStatusFilter("Preparing")}
+                >
+                  Preparing
+                </button>
+                <button
+                  className={`status-btn ${statusFilter === "Ready" ? "active" : ""}`}
+                  onClick={() => setStatusFilter("Ready")}
+                >
+                  Ready
+                </button>
+                <button
+                  className={`status-btn ${statusFilter === "Picked Up" ? "active" : ""}`}
+                  onClick={() => setStatusFilter("Picked Up")}
+                >
+                  Picked Up
+                </button>
+              </div>
+            </div>
+
+            <div className="filter-info">
+              <span className="results-counter">
+                Showing {filteredOrders.length} of {orders.length} orders
+              </span>
+              {(statusFilter !== "All" || orderIdSearch !== "") && (
+                <button 
+                  className="clear-filters-btn"
+                  onClick={() => {
+                    setStatusFilter("All");
+                    setOrderIdSearch("");
+                  }}
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
           </div>
 
@@ -177,8 +244,23 @@ export default function AdminDashboard() {
                 <p>New customer orders will appear here as soon as they are placed.</p>
               </div>
             )}
+            {!loading && orders.length > 0 && filteredOrders.length === 0 && (
+              <div className="empty-state">
+                <h3>No orders match your filters</h3>
+                <p>Try adjusting your search or status filter.</p>
+                <button 
+                  className="clear-filters-inline"
+                  onClick={() => {
+                    setStatusFilter("All");
+                    setOrderIdSearch("");
+                  }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
 
-            {orders.map((order) => {
+            {filteredOrders.map((order) => {
               const items = parseItems(order.items);
               const status = normalizeStatus(order.status);
 
