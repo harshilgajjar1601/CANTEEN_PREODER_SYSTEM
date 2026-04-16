@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 exports.registerUser = async (req, res) => {
     const { name, email, password } = req.body;
@@ -7,6 +8,7 @@ exports.registerUser = async (req, res) => {
     try {
         // check user exists
         const [user] = await userModel.findUserByEmail(email);
+        console.log(user);
 
         if (user.length > 0) {
             return res.json({ message: "Username is already exist!try another username..." });
@@ -51,13 +53,29 @@ exports.loginUser = async (req, res) => {
             });
         }
 
+        const token = jwt.sign(
+            { id: user.id, name: user.name, email: user.email },
+            "secretkey",
+            { expiresIn: "1h" }
+        );
+
         return res.json({
             success: true,
-            message: "Login successfully! Redirecting to menu..."
+            message: "Login successfully! Redirecting to menu...",
+            token,
+            user: {
+            id: user.id,
+            name: user.name,
+            email: user.email
+            }
         });
+        
 
     } catch (err) {
         console.log("ERROR:", err);
         return res.json({ success: false, message: "Server error" });
     }
+
+
+    
 };

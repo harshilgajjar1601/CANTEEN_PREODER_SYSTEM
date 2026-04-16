@@ -1,0 +1,86 @@
+.orders-container {
+  display: flex;
+}
+
+.orders-content {
+  width: 100%;
+  margin: 0 0 0 220px;
+  padding: 96px 24px 28px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+tbody tr + tr td {
+  border-top: 1px solid rgba(255, 122, 0, 0.08);
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(255, 248, 240, 0.65);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background: rgba(209, 138, 0, 0.12);
+  color: var(--warning);
+}
+
+.status.preparing {
+  background: rgba(255, 122, 0, 0.12);
+  color: #b35000;
+}
+
+.status.completed,
+.status.ready {
+  background: rgba(47, 143, 70, 0.12);
+  color: var(--success);
+}
+
+.orders-content p {
+  color: var(--muted);
+}
+
+@media (max-width: 768px) {
+  .orders-content {
+    margin-left: 0;
+    padding: 86px 16px 20px;
+  }
+
+  th,
+  td {
+    padding: 12px 14px;
+  }
+}
