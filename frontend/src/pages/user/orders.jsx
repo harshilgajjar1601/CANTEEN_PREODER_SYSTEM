@@ -28,16 +28,37 @@ function Orders() {
       .catch((err) => console.log(err));
   }, []);
 
+  const formatOrderId = (orderId) => {
+    if (!orderId) {
+      return "";
+    }
+
+    if (orderId.startsWith("ORD #")) {
+      return orderId;
+    }
+
+    return orderId.replace(/^ORD[-\s]*/, "ORD #");
+  };
+
   return (
     <div className="orders-container">
       <Sidebar toggleSidebar={toggleSidebar} />
       <Navbar toggleSidebar={toggleSidebar} />
 
       <div className="orders-content">
-        <h2>My Orders 📦</h2>
+        <div className="page-header">
+          <div>
+            <span className="section-kicker">History</span>
+            <h2>My Orders 📦</h2>
+            <p>Track completed and pending canteen orders in one place.</p>
+          </div>
+        </div>
 
         {orders.length === 0 ? (
-          <p>No orders found</p>
+          <div className="empty-state">
+            <h3>No orders found</h3>
+            <p>Once you place your first order, it will appear here.</p>
+          </div>
         ) : (
           <div className="table-container">
             <table>
@@ -56,7 +77,7 @@ function Orders() {
 
                   return (
                     <tr key={index}>
-                      <td>{order.order_id}</td>
+                      <td>{formatOrderId(order.order_id)}</td>
 
                       <td>
                         {items.map((item, i) => (

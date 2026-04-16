@@ -7,7 +7,7 @@ function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
-  const [color, setColor] = useState("");
+  const [msgType, setMsgType] = useState("");
 
   const navigate = useNavigate();
 
@@ -24,61 +24,60 @@ function AdminLogin() {
         localStorage.setItem("admin", true); // 🔥 admin flag
 
         setMsg(res.data.message);
-        setColor("green");
+        setMsgType("success");
 
         setTimeout(() => {
           navigate("/admin/adminDashboard", { replace: true });
         }, 1500);
       } else {
         setMsg(res.data.message);
-        setColor("red");
+        setMsgType("error");
       }
     } catch (err) {
       console.log(err);
       setMsg("Server error");
-      setColor("red");
+      setMsgType("error");
     }
   };
 
   return (
-    <div className="container">
-        <div className="login-card">
+    <div className="auth-page">
+        <div className="auth-card auth-card--admin">
+            <span className="auth-eyebrow">Admin access</span>
+            <h2 className="auth-title">Sign in to the dashboard</h2>
+            <p className="auth-subtitle">Restricted access for canteen operators and managers.</p>
 
-            <h2>ADMIN-LOGIN 🔐</h2>
-            <p className="subtitle">Only for admin access</p>
+            <form onSubmit={handleLogin} className="auth-form">
+              <div className="input-box">
+                  <input
+                  type="email"
+                  placeholder="Admin Email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <i className="fa fa-envelope"></i>
+              </div>
 
-            <form onSubmit={handleLogin}>
+              <div className="input-box password-box">
+                  <input
+                  type="password"
+                  placeholder="Password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <i className="fa fa-lock"></i>
+              </div>
 
-            <div className="input-box">
-                <input
-                type="email"
-                placeholder="Admin Email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                />
-                <i className="fa fa-envelope"></i>
-            </div>
+              {msg && (
+                <p className={`auth-message ${msgType}`} aria-live="polite">
+                  {msg}
+                </p>
+              )}
 
-            <div className="input-box password-box">
-                <input
-                type="password"
-                placeholder="Password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                />
-                <i className="fa fa-lock"></i>
-            </div>
-
-            <button type="submit">Login</button>
+              <button className="auth-button" type="submit">Login</button>
             </form>
-
-            {msg && (   
-            <p style={{ color, marginTop: "10px", fontWeight: "bold" }}>
-                {msg}
-            </p>
-            )}
 
         </div>
     </div>

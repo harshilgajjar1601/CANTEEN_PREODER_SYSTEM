@@ -7,9 +7,8 @@ function Login() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [msg, setMessage] = useState("");
-  const [type, setType] = useState("");
-  const [color, setColor] = useState("");
+  const [msg, setMessage] = useState(() => location.state?.message || "");
+  const [msgType, setMsgType] = useState(() => location.state?.type || "success");
 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -17,17 +16,12 @@ function Login() {
 
 
   useEffect(() => {
-      const token = localStorage.getItem("token");
-      const email = localStorage.getItem("email");
+    const token = localStorage.getItem("token");
 
     if (token) {
         navigate("/menu", { replace: true });
     }
-    if (location.state && location.state.message) {
-      setMessage(location.state.message);
-      setType(location.state.type);
-    }
-  }, [location.state]);
+  }, [location.state, navigate]);
 
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
@@ -48,7 +42,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("email", res.data.user.email);
       setMessage(res.data.message);
-      setColor("green");
+      setMsgType("success");
 
       setTimeout(() => {
         navigate("/menu", { replace: true });
@@ -56,22 +50,23 @@ function Login() {
       
     } else {
         setMessage(res.data.message);
-        setColor("red");
+        setMsgType("error");
       }
 
-  } catch (err) {
+  } catch {
     setMessage("Server error");
-    setColor("red");
+    setMsgType("error");
   }
 };
 
   return (
-    <div className="container">
-      <div className="login-card">
-        <h2>USER-LOGIN</h2>
-        <p className="subtitle">Welcome User 👋</p>
+    <div className="auth-page">
+      <div className="auth-card">
+        <span className="auth-eyebrow">User access</span>
+        <h2 className="auth-title">Sign in to your account</h2>
+        <p className="auth-subtitle">Welcome back. Check your menu, cart, and live orders from one place.</p>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="auth-form">
           <div className="input-box">
             <input
               type="email"
@@ -102,25 +97,18 @@ function Login() {
             </span>
           </div>
 
-          {/* 🔥 MESSAGE UI */}
           {msg && (
-            <p
-              style={{
-                color: type === "success" ? "green" : "red",
-                marginBottom: "10px",
-                fontWeight: "bold",
-              }}
-            >
+            <p className={`auth-message ${msgType}`} aria-live="polite">
               {msg}
             </p>
           )}
 
-          <button type="submit"> Login</button>
+          <button className="auth-button" type="submit">Login</button>
 
-          <p className="bottom-text">
+          <p className="auth-footer">
             Don't have an account?<Link to="/register">Sign-Up</Link>
           </p>
-          <p className="bottom-text">
+          <p className="auth-note">
             Admin login..!<Link to="/admin/adminLogin">Login</Link>
           </p>
         </form>

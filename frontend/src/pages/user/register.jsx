@@ -7,6 +7,8 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
 
   const togglePassword = () => {
     setPasswordVisible(!passwordVisible);
@@ -35,21 +37,25 @@ function Register() {
       console.log(result);
 
       if (result.message) {
-        alert(result.message);
+        setMessage(result.message);
+        setMessageType(res.ok ? "success" : "error");
       }
 
     } catch (error) {
       console.log("Error:", error);
+      setMessage("Server error");
+      setMessageType("error");
     }
   };
 
   return (
-    <div className="container">
-      <div className="register-card">
-        <h2>CREATE ACCOUNT</h2>
-        <p className="subtitle">Welcome User 👋</p>
+    <div className="auth-page">
+      <div className="auth-card auth-card--wide">
+        <span className="auth-eyebrow">New user</span>
+        <h2 className="auth-title">Create your account</h2>
+        <p className="auth-subtitle">Register once and place orders faster the next time.</p>
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} className="auth-form">
           <div className="input-box">
             <i className="fa fa-user"></i>
             <input
@@ -90,9 +96,15 @@ function Register() {
             </span>
           </div>
 
-          <button type="submit">Sign Up</button>
+          {message && (
+            <p className={`auth-message ${messageType}`} aria-live="polite">
+              {message}
+            </p>
+          )}
 
-          <p className="bottom-text">
+          <button className="auth-button" type="submit">Sign Up</button>
+
+          <p className="auth-footer">
             Already have an account?<Link to="/">Login</Link>
           </p>
         </form>

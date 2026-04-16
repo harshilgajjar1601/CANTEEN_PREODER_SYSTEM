@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/admin/dashboard.css";
 import "../../styles/admin/adminSidebar.css";
 
@@ -12,9 +13,15 @@ const orders = [
 export default function AdminDashboard() {
 
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin");
+    navigate("/", { replace: true });
   };
 
   const totalOrders = orders.length;
@@ -25,16 +32,21 @@ export default function AdminDashboard() {
   return (
     <div className="admin-container">
 
-      {/* 🔥 Sidebar */}
       <div className={`Sidebar ${isOpen ? "open" : ""}`}>
-        <h2 className="logo">Admin</h2>
+        <div className="logo-block">
+          <span className="logo-mark">CP</span>
+          <div>
+            <h2 className="logo">Admin</h2>
+            <p className="logo-subtitle">Canteen control room</p>
+          </div>
+        </div>
 
         <ul>
           <li onClick={toggleSidebar}>📊 Dashboard</li>
           <li onClick={toggleSidebar}>📦 Orders</li>
           <li onClick={toggleSidebar}>🍽 Menu</li>
           <li onClick={toggleSidebar}>👤 Users</li>
-          <li onClick={toggleSidebar}>🚪 Logout</li>
+          <li onClick={handleLogout}>🚪 Logout</li>
         </ul>
       </div>
 
@@ -44,22 +56,28 @@ export default function AdminDashboard() {
       {/* 🔥 Main Dashboard */}
       <div className="dashboard">
 
-        {/* 🔥 Topbar */}
         <div className="topbar">
-          <button className="menu-btn" onClick={toggleSidebar}>☰</button>
-          <h2>Admin Dashboard</h2>
+          <div className="topbar-left">
+            <button className="menu-btn" onClick={toggleSidebar}>☰</button>
+            <div>
+              <span className="topbar-kicker">Operations</span>
+              <h2>Admin Dashboard</h2>
+            </div>
+          </div>
+          <span className="topbar-pill">Live overview</span>
         </div>
 
         <div className="dashboard-content">
+          <section className="welcome-panel">
+            <div>
+              <span className="section-kicker">Overview</span>
+              <h3 className="welcome">Welcome, Admin!</h3>
+              <p>Track incoming work, keep the queue moving, and review active orders.</p>
+            </div>
+          </section>
 
-      
-          <h3 className="welcome">Welcome, Admin!</h3>
-
-          <hr />
-
-          {/* Stats */}
           <div className="stats">
-            <div className="card" >
+            <div className="card">
               <p>Total Orders</p>
               <h2>{totalOrders}</h2>
             </div>
@@ -70,12 +88,13 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Orders */}
           <div className="orders-list">
             {orders.map((order) => (
               <div className="order-card" key={order.id}>
                 <div className="order-info">
-                  <b>Order #{order.id}</b> — {order.customer} — ₹{order.total}
+                  <span className="order-id">Order #{order.id}</span>
+                  <p>{order.customer}</p>
+                  <small>₹{order.total}</small>
                 </div>
 
                 <div className="order-actions">

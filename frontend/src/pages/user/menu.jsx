@@ -18,29 +18,65 @@ import fruitJuice from "../../assets/Images/fruitJuice.webp";
 import "../../styles/user/menu.css";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
-import { useNavigate , Link} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import  { jwtDecode } from "jwt-decode";
 import { useState, useEffect , useContext} from "react";
 import { CartContext } from "../../context/CartContext";
 
+const categories = [
+  { label: "Burger", icon: "fa-hamburger" },
+  { label: "Pizza", icon: "fa-pizza-slice" },
+  { label: "Drinks", icon: "fa-champagne-glasses" },
+  { label: "Sandwich", icon: "fa-bread-slice" },
+  { label: "Breakfast", icon: "fa-mug-hot" },
+  { label: "Lunch", icon: "fa-spoon" },
+  { label: "Chinese", icon: "fa-bowl-rice" },
+];
+
+const foodItems = [
+  { id: 1, name: "Burger", price: 90, image: burger, tag: "Classic" },
+  { id: 2, name: "Pizza", price: 150, image: pizza, tag: "Chef pick" },
+  { id: 3, name: "French Fries", price: 120, image: fries, tag: "Snack" },
+  { id: 4, name: "Cold Coffee", price: 100, image: coffee, tag: "Drink" },
+  { id: 5, name: "Masala Dosa", price: 190, image: dosa, tag: "Breakfast" },
+  { id: 6, name: "Paneer Pizza", price: 350, image: paneerPizza, tag: "Premium" },
+  { id: 7, name: "Veg Sandwich", price: 60, image: vegSandwich, tag: "Light" },
+  { id: 8, name: "Tea", price: 20, image: tea, tag: "Hot" },
+  { id: 9, name: "Coffee", price: 40, image: coffee, tag: "Hot" },
+  { id: 10, name: "Chocolate Shake", price: 90, image: chocolateShake, tag: "Drink" },
+  { id: 11, name: "Veg Noodles", price: 210, image: vegNoodles, tag: "Chinese" },
+  { id: 12, name: "Manchurian", price: 100, image: manchurian, tag: "Chinese" },
+  { id: 13, name: "Pav Bhaji", price: 120, image: pavBhaji, tag: "Street food" },
+  { id: 14, name: "Samosa", price: 25, image: samosa, tag: "Snack" },
+  { id: 15, name: "Kachori", price: 30, image: kachori, tag: "Snack" },
+  { id: 16, name: "Ice Cream", price: 100, image: iceCream, tag: "Dessert" },
+  { id: 17, name: "Fruit Juice", price: 70, image: fruitJuice, tag: "Fresh" },
+];
 
 
 
 function Menu() {
   const { addToCart } = useContext(CartContext);
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [username] = useState(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return "";
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.name || "";
+    } catch {
+      return "";
+    }
+  });
   useEffect(() => {
   const token = localStorage.getItem("token");
 
-  // console.log("MENU TOKEN:", token);
-
   if (!token) {
     navigate("/", { replace: true });
-  }
-  else {
-    const decoded = jwtDecode(token);
-    setUsername(decoded.name);
   }
 }, [navigate]);
 
@@ -51,156 +87,70 @@ function Menu() {
 
   return (
     <>
-    
-      {/* Sidebar */}
-     <Sidebar toggleSidebar={toggleSidebar} />
-      {/* Top Nav */}
+      <Sidebar toggleSidebar={toggleSidebar} />
       <Navbar username={username} toggleSidebar={toggleSidebar} />
 
-      {/* Main */}
-      <div className="main">
+      <div className="main menu-page">
+        <section className="menu-hero">
+          <div>
+            <span className="section-kicker">Campus canteen</span>
+            <h1>Fresh food, fast ordering.</h1>
+            <p>
+              Browse the menu, add items in a tap, and move straight to checkout.
+            </p>
+          </div>
+          <div className="hero-stats">
+            <div>
+              <strong>{foodItems.length}</strong>
+              <span>Items</span>
+            </div>
+            <div>
+              <strong>{categories.length}</strong>
+              <span>Categories</span>
+            </div>
+          </div>
+        </section>
 
-        {/* Search */}
         <div className="search-box">
-          <input type="text" placeholder="Search..." />
-          <button><i className="fa fa-search"></i></button>
+          <input type="text" placeholder="Search your favorite meal" />
+          <button aria-label="Search">
+            <i className="fa fa-search"></i>
+          </button>
         </div>
 
-        {/* Categories */}
         <div className="categories">
-          <div className="cat"><i className="fa fa-hamburger"></i><p>Burger</p></div>
-          <div className="cat"><i className="fa fa-pizza-slice"></i><p>Pizza</p></div>
-          <div className="cat"><i className="fa-solid fa-champagne-glasses"></i><p>Drinks</p></div>
-          <div className="cat"><i className="fa-solid fa-bread-slice"></i><p>Sandwich</p></div>
-          <div className="cat"><i className="fa-solid fa-mug-hot"></i><p>Break fast</p></div>
-          <div className="cat"><i className="fa-solid fa-spoon"></i><p>Lunch</p></div>
-          <div className="cat"><i className="fa-solid fa-bowl-rice"></i><p>Chinese</p></div>
+          {categories.map((category) => (
+            <button className="cat" key={category.label} type="button">
+              <i className={`fa ${category.icon}`}></i>
+              <p>{category.label}</p>
+            </button>
+          ))}
         </div>
 
-        <h3 id="title">Food Cart</h3>
+        <div className="section-head">
+          <h3 id="title">Popular picks</h3>
+          <p>Simple, quick, and built for repeat orders.</p>
+        </div>
 
-        {/* Food List */}
         <div className="food-list">
-
-          <div className="food-card">
-            <img src={burger} alt="Burger" />
-            <h4>Burger</h4>
-            <p>₹90</p>
-            <button onClick={() => addToCart({ id: 1, name: "Burger", price: 90 , image: burger })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={pizza} alt="Pizza" />
-            <h4>Pizza</h4>
-            <p>₹150</p>
-            <button onClick={() => addToCart({ id: 2, name: "Pizza", price: 150 , image: pizza })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={fries} alt="French Fries" />
-            <h4>French Fries</h4>
-            <p>₹120</p>
-            <button onClick={() => addToCart({ id: 3, name: "French Fries", price: 120 , image: fries })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card drink">
-            <img src={coffee} alt="Cold Coffee" />
-            <h4>Cold Coffee</h4>
-            <p>₹100</p>
-            <button onClick={() => addToCart({ id: 4, name: "Cold Coffee", price: 100 , image: coffee })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={dosa} alt="Masala Dosa" />
-            <h4>Masala Dosa</h4>
-            <p>₹190</p>
-            <button onClick={() => addToCart({ id: 5, name: "Masala Dosa", price: 190 , image: dosa })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={paneerPizza} alt="Paneer Pizza" />
-            <h4>Paneer Pizza</h4>
-            <p>₹350</p>
-            <button onClick={() => addToCart({ id: 6, name: "Paneer Pizza", price: 350 , image: paneerPizza })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={vegSandwich} alt="Veg Sandwich" />
-            <h4>Veg Sandwich</h4>
-            <p>₹60</p>
-            <button onClick={() => addToCart({ id: 7, name: "Veg Sandwich", price: 60 , image: vegSandwich })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card drink">
-            <img src={tea} alt="Tea" />
-            <h4>Tea</h4>
-            <p>₹20</p>
-            <button onClick={() => addToCart({ id: 8, name: "Tea", price: 20 , image: tea })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card drink">
-            <img src={coffee} alt="Coffee" />
-            <h4>Coffee</h4>
-            <p>₹40</p>
-            <button onClick={() => addToCart({ id: 9, name: "Coffee", price: 40 , image: coffee })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card drink">
-            <img src={chocolateShake} alt="Chocolate Shake" />
-            <h4>Chocolate Shake</h4>
-            <p>₹90</p>
-            <button onClick={() => addToCart({ id: 10, name: "Chocolate Shake", price: 90 , image: chocolateShake })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={vegNoodles} alt="Veg Noodles" />
-            <h4>Veg Noodles</h4>
-            <p>₹210</p>
-            <button onClick={() => addToCart({ id: 11, name: "Veg Noodles", price: 210 , image: vegNoodles })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={manchurian} alt="Manchurian" />
-            <h4>Manchurian</h4>
-            <p>₹100</p>
-            <button onClick={() => addToCart({ id: 12, name: "Manchurian", price: 100 , image: manchurian })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={pavBhaji} alt="Pav Bhaji" />
-            <h4>Pav Bhaji</h4>
-            <p>₹120</p>
-            <button onClick={() => addToCart({ id: 13, name: "Pav Bhaji", price: 120 , image: pavBhaji })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={samosa} alt="Samosa" />
-            <h4>Samosa</h4>
-            <p>₹25</p>
-            <button onClick={() => addToCart({ id: 14, name: "Samosa", price: 25 , image: samosa })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={kachori} alt="Kachori" />
-            <h4>Kachori</h4>
-            <p>₹30</p>
-            <button onClick={() => addToCart({ id: 15, name: "Kachori", price: 30 , image: kachori })}>Add to Cart</button>
-          </div>
-
-          <div className="food-card">
-            <img src={iceCream} alt="Ice Cream" />
-            <h4>Ice Cream</h4>
-            <p>₹100</p>
-            <button onClick={() => addToCart({ id: 16, name: "Ice Cream", price: 100 , image: iceCream })}  >Add to Cart</button>
-          </div>
-
-          <div className="food-card drink">
-            <img src={fruitJuice} alt="Fruit Juice" />
-            <h4>Fruit Juice</h4>
-            <p>₹70</p>
-            <button onClick={() => addToCart({ id: 17, name: "Fruit Juice", price: 70 , image: fruitJuice })}>Add to Cart</button>
-          </div>
-
+          {foodItems.map((item) => (
+            <article className="food-card" key={item.id}>
+              <div className="food-card__media">
+                <img src={item.image} alt={item.name} />
+              </div>
+              <div className="food-card__body">
+                <span className="food-tag">{item.tag}</span>
+                <h4>{item.name}</h4>
+                <p className="food-price">₹{item.price}</p>
+                <button
+                  className="food-card__button"
+                  onClick={() => addToCart({ id: item.id, name: item.name, price: item.price, image: item.image })}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </>

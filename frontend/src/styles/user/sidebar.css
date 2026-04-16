@@ -1,72 +1,60 @@
 .sidebar {
-    position: fixed;
-    padding: 20px;
-    left: 0;
-    top: 0;
-    width: 220px;
-    height: 100%;
-    background: #fff7f0;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-} 
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 220px;
+  padding: 22px 18px;
+  background: rgba(255, 250, 244, 0.96);
+  border-right: 1px solid rgba(255, 122, 0, 0.1);
+  box-shadow: 8px 0 28px rgba(67, 36, 12, 0.06);
+  z-index: 1050;
+  backdrop-filter: blur(14px);
+}
+
+.menuTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  color: var(--text);
+}
+
+.menuTitle h3 {
+  font-size: 1.05rem;
+}
+
+.menuTitle i {
+  cursor: pointer;
+  color: var(--muted);
+}
 
 .sidebar a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-    color: #333;
-    text-decoration: none;
-    padding: 8px;
-    border-radius: 8px;
-    transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  padding: 12px 12px;
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
-/* 🔥 HOVER ORANGE */
 .sidebar a:hover {
-    background: #ff7a00;
-    color: white;
+  background: var(--accent);
+  color: #ffffff;
+  transform: translateX(2px);
 }
 
-/* ===== MOBILE SIDEBAR ===== */
 @media (max-width: 768px) {
-  
-  /* Sidebar hidden by default */
   .sidebar {
-    position: fixed;
-    top: 0;
     left: -250px;
-    width: 220px;
+    width: 250px;
     height: 100vh;
-    background: #f3ede7;
-    z-index: 2000;
-    transition: 0.3s ease;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    transition: left 220ms ease;
   }
 
-  /* Sidebar open */
   .sidebar.active {
     left: 0;
-  }
-
-  /* Overlay background */
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 1500;
-  }
-
-  /* Top navbar full width */
-  .top-nav {
-    margin-left: 0;
-  }
-
-  /* Main content full width */
-  .main,
-  .cart-content {
-    margin-left: 0;
   }
 }

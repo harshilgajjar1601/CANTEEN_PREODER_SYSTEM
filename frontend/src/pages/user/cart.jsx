@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 function Cart() {
     const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
-    const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
 
     // 🔥 NEW STATES
@@ -29,7 +28,7 @@ function Cart() {
 
     // 🔥 ORDER ID + PAYMENT LOGIC
     const generateOrderId = () => {
-      return "ORD-" + Math.floor(1000 + Math.random() * 9000);
+      return "ORD #" + Math.floor(1000 + Math.random() * 9000);
     };
 
     const handlePayment = async () => {
@@ -80,37 +79,43 @@ function Cart() {
     <div className="cart-container">
       <Sidebar toggleSidebar={toggleSidebar} /> 
       <Navbar toggleSidebar={toggleSidebar} />
-        <div className="cart-content">
-      
-          <h2>My Cart 🛒</h2>
-          
-            {cart.length === 0 ? (
-              <p>Your cart is empty..!</p>
-            ) : (
-              <>
-                  <div className="cart-list">
-                    {cart.map((item) => (
-                      <div className="cart-item" key={item.id}>
-                  
-                      <img src={item.image} alt={item.name} />
+      <div className="cart-content">
+        <div className="page-header">
+          <div>
+            <span className="section-kicker">Checkout</span>
+            <h2>My Cart 🛒</h2>
+            <p>Review quantities and confirm the final amount before payment.</p>
+          </div>
+        </div>
 
-                      <div className="details">
-                        <h4>{item.name}</h4>
-                        <p>₹{item.price}</p>
-                      </div>
+        {cart.length === 0 ? (
+          <div className="empty-state">
+            <h3>Your cart is empty</h3>
+            <p>Add a few items from the menu to start your order.</p>
+          </div>
+        ) : (
+          <>
+            <div className="cart-list">
+              {cart.map((item) => (
+                <div className="cart-item" key={item.id}>
+                  <img src={item.image} alt={item.name} />
 
-                      <div className="quantity">
-                        <button onClick={() => removeFromCart(item.id)}>-</button>
-                        <span>{item.quantity}</span>
-                        <button onClick={() => addToCart(item)}>+</button>
-                      </div>
+                  <div className="details">
+                    <h4>{item.name}</h4>
+                    <p>₹{item.price}</p>
+                  </div>
 
-                      <div className="price">
-                        ₹{item.price * item.quantity}
-                      </div>
+                  <div className="quantity">
+                    <button onClick={() => removeFromCart(item.id)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => addToCart(item)}>+</button>
+                  </div>
 
-                    </div>
-                  ))}
+                  <div className="price">
+                    ₹{item.price * item.quantity}
+                  </div>
+                </div>
+              ))}
             </div>
 
             <div className="cart-footer">

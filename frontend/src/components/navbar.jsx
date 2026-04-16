@@ -8,6 +8,7 @@ function Navbar({ username, toggleSidebar }) {
 
   const { cart } = useContext(CartContext);
   const totalItems = cart.reduce((acc, item) => acc + item.quantity,0);
+  const displayName = username || "Guest";
 
   return (
     <div className="top-nav">
@@ -19,7 +20,7 @@ function Navbar({ username, toggleSidebar }) {
         ></i>
 
         <i className="fa-solid fa-user"></i>
-        <span className="username">Welcome...! {username}</span>
+        <span className="username">Welcome, {displayName}</span>
       </div>
 
       <div className="cart" onClick={() => navigate("/cart", { replace: true })}>
