@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
 import "../../styles/user/orders.css";
+import { Link } from "react-router-dom";
 
 const STATUS_OPTIONS = ["Pending", "Preparing", "Ready", "Picked Up"];
 
@@ -30,6 +31,8 @@ const statusClass = (status) =>
 
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("active");
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");
@@ -41,25 +44,31 @@ function Orders() {
 
     if (!email) {
       console.log("Email not found ❌");
+      setLoading(false);
       return;
     }
 
     fetch(`http://localhost:5000/api/orders?email=${email}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Orders Data 🔥", data);
         setOrders(Array.isArray(data) ? data : []);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     fetchOrders();
-
-    const interval = setInterval(fetchOrders, 15000);
-
-    return () => clearInterval(interval);
   }, [fetchOrders]);
+
+  const activeOrders = orders.filter(
+    (order) => normalizeStatus(order.status) !== "Picked Up"
+  );
+  const completedOrders = orders.filter(
+    (order) => normalizeStatus(order.status) === "Picked Up"
+  );
+
+  const displayOrders = activeTab === "active" ? activeOrders : completedOrders;
 
   return (
     <div className="orders-container">
@@ -69,58 +78,95 @@ function Orders() {
       <div className="orders-content">
         <div className="page-header">
           <div>
-            <span className="section-kicker">History</span>
+            <span className="section-kicker">Track</span>
             <h2>My Orders 📦</h2>
-            <p>Track completed and pending canteen orders in one place.</p>
+            <p>View your active and past orders</p>
           </div>
+          <Link to="/menu" className="order-now-btn">
+            Order Now
+          </Link>
         </div>
 
-        {orders.length === 0 ? (
+        <div className="orders-tabs">
+          <button
+            className={`tab-btn ${activeTab === "active" ? "active" : ""}`}
+            onClick={() => setActiveTab("active")}
+          >
+            Active Orders
+            {activeOrders.length > 0 && (
+              <span className="tab-badge">{activeOrders.length}</span>
+            )}
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "completed" ? "active" : ""}`}
+            onClick={() => setActiveTab("completed")}
+          >
+            Order History
+            {completedOrders.length > 0 && (
+              <span className="tab-badge completed">{completedOrders.length}</span>
+            )}
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="loading">Loading orders...</div>
+        ) : displayOrders.length === 0 ? (
           <div className="empty-state">
-            <h3>No orders found</h3>
-            <p>Once you place your first order, it will appear here.</p>
+            <h3>
+              {activeTab === "active"
+                ? "No active orders"
+                : "No order history yet"}
+            </h3>
+            <p>
+              {activeTab === "active"
+                ? "Place your first order to see it here"
+                : "Your completed orders will appear here"}
+            </p>
+            {activeTab === "active" && (
+              <Link to="/menu" className="browse-menu-btn">
+                Browse Menu
+              </Link>
+            )}
           </div>
         ) : (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Items</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+          <div className="orders-list">
+            {displayOrders.map((order, index) => {
+              const items = Array.isArray(order.items)
+                ? order.items
+                : JSON.parse(order.items || "[]");
+              const status = normalizeStatus(order.status);
+              const orderDate = new Date(order.created_at);
+              const dateStr = orderDate.toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
 
-              <tbody>
-                {orders.map((order, index) => {
-                  const items = Array.isArray(order.items)
-                    ? order.items
-                    : JSON.parse(order.items || "[]");
-                  const status = normalizeStatus(order.status);
-
-                  return (
-                    <tr key={index}>
-                      <td>{formatOrderId(order.order_id)}</td>
-
-                      <td>
-                        {items.map((item, i) => (
-                          <div key={i}>
-                            {item.name} x {item.quantity}
-                          </div>
-                        ))}
-                      </td>
-
-                      <td>₹{order.amount}</td>
-
-                      <td className={`status ${statusClass(status)}`}>
-                        {status}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              return (
+                <div className="order-card" key={index}>
+                  <div className="order-header">
+                    <span className="order-id">
+                      {formatOrderId(order.order_id)}
+                    </span>
+                    <span className={`status ${statusClass(status)}`}>
+                      {status}
+                    </span>
+                  </div>
+                  <div className="order-date">{dateStr}</div>
+                  <div className="order-items">
+                    {items.map((item, i) => (
+                      <span key={i} className="item-tag">
+                        {item.name} x{item.quantity}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="order-footer">
+                    <span className="order-amount">₹{order.amount}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

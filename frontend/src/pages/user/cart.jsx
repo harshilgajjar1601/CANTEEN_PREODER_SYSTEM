@@ -16,7 +16,13 @@ function Cart() {
     const navigate = useNavigate();
 
     const handlePlaceOrder = () => {
+      console.log("Place Order clicked, cart items:", cart.length, "showPayment will be:", true);
+      if (cart.length === 0) {
+        alert("Your cart is empty! Add items from the menu first.");
+        return;
+      }
       setShowPayment(true);
+      console.log("showPayment set to true, state should update");
     };
 
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity,0);
@@ -31,47 +37,58 @@ function Cart() {
       return "ORD #" + Math.floor(1000 + Math.random() * 9000);
     };
 
-    const handlePayment = async () => {
+const handlePayment = async () => {
+  alert("Starting payment process...");
+  console.log("handlePayment called");
+  
+  const userEmail = localStorage.getItem("email");
+  if (!userEmail) {
+    alert("Please login first!");
+    return;
+  }
+
   setLoading(true);
+  console.log("Loading set to true");
 
-  setTimeout(async () => {
-    setShowPayment(false);
-    setShowSuccess(true);
+  const orderId = generateOrderId();
+  
+  console.log("Sending order to server:", { orderId, userEmail, total, cartItems: cart.length });
 
-    const orderId = generateOrderId();
-    const email = localStorage.getItem("email"); // 🔥 IMPORTANT
+  try {
+    const response = await fetch("http://localhost:5000/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        order_id: orderId,
+        items: JSON.stringify(cart),
+        amount: total,
+        email: userEmail
+      })
+    });
 
-    try {
-      await fetch("http://localhost:5000/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          items: JSON.stringify(cart), // 👈 stringify
-          amount: total,
-          email: email
-        })
-      });
+    const result = await response.json();
+    console.log("Server response:", result);
 
-      console.log("Order Saved ✅");
-
-      clearCart(); // Clear cart after order is placed
-
-    } catch (err) {
-      console.log("Order Save Error ❌", err);
-    }
-
-    
     setLoading(false);
-    
-    setTimeout(() => {
-      setShowSuccess(false);
-      navigate("/orders", { replace: true });
-    }, 2000);
 
-  }, 1500);
+    if (result.success) {
+      setShowPayment(false);
+      setShowSuccess(true);
+      clearCart();
+      console.log("Order placed successfully!");
+      
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate("/orders");
+      }, 2000);
+    } else {
+      alert("Failed: " + (result.message || "Unknown error"));
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    setLoading(false);
+    alert("Error placing order. Is server running?");
+  }
 };
 
   return (
@@ -128,28 +145,34 @@ function Cart() {
         </div>
 
         {/* 🔥 PAYMENT MODAL */}
-        {showPayment && (
-          <div className="overlay">
-            <div className="modal">
+        {showPayment && !showSuccess && (
+          <div style={{
+            position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.5)', zIndex: 9999
+          }}>
+            <div style={{background: 'white', padding: 24, borderRadius: 16, minWidth: 320}}>
 
               <h2>Payment</h2>
 
               {cart.map((item, index) => (
-                <div key={index} className="payment-item">
+                <div key={index} style={{display:'flex', justifyContent:'space-between', margin: '8px 0'}}>
                   <span>{item.name} x {item.quantity}</span>
                   <span>₹{item.price * item.quantity}</span>
                 </div>
               ))}
 
-              <hr />
+              <hr style={{margin: '16px 0'}} />
 
               <h3>Total: ₹{total}</h3>
-              <div className="paymentBtns">
-                <button className="pay-btn" onClick={handlePayment} disabled={loading}>
-                  {loading ? <div className="loader"></div> : "Make Payment"}
-                </button>
-                <button className="cancel-btn" onClick={() => setShowPayment(false)}>
+              <div style={{display: 'flex', gap: 10, marginTop: 16}}>
+                <button className="cancel-btn" onClick={() => { setShowPayment(false); }} style={{flex: 1, padding: '12px'}}>
                   Cancel
+                </button>
+                <button onClick={handlePayment} disabled={loading} style={{
+                  flex: 1, padding: '12px', background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  border: 'none', borderRadius: 10, color: 'white', fontWeight: 'bold', cursor: 'pointer'
+                }}>
+                  {loading ? "Processing..." : "Make Payment"}
                 </button>
               </div>
             </div>
@@ -158,9 +181,14 @@ function Cart() {
 
         {/* 🔥 SUCCESS POPUP */}
         {showSuccess && (
-          <div className="overlay">
-            <div className="modal success-modal">
-              <h2>✅ Payment Successful</h2>
+          <div style={{
+            position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.5)', zIndex: 9999
+          }}>
+            <div style={{background: 'white', padding: 32, borderRadius: 16, textAlign: 'center'}}>
+              <h2 style={{color: 'green'}}>✓ Payment Successful!</h2>
+              <p>Your order has been placed.</p>
+              <p>Redirecting to orders...</p>
             </div>
           </div>
         )}

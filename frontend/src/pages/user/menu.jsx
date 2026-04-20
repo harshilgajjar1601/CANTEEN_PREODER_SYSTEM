@@ -182,7 +182,7 @@ function Menu() {
                   className="suggestion-item"
                   onClick={() => handleSuggestionClick(item)}
                 >
-                  <img src={item.image} alt={item.name} className="suggestion-img" />
+                  <img src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : "https://via.placeholder.com/300"} alt={item.name} className="suggestion-img" />
                   <div className="suggestion-info">
                     <span className="suggestion-name">{item.name}</span>
                     <span className="suggestion-details">
@@ -228,7 +228,7 @@ function Menu() {
             <article className="food-card" key={item.id}>
               <div className="food-card__media">
                 <img 
-                  src={item.image_url ? `http://localhost:5000${item.image_url}` : "https://via.placeholder.com/300"} 
+                  src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : "https://via.placeholder.com/300"} 
                   alt={item.name} 
                 />
               </div>
@@ -242,7 +242,7 @@ function Menu() {
                     id: item.id, 
                     name: item.name, 
                     price: item.price, 
-                    image: item.image_url ? `http://localhost:5000${item.image_url}` : "https://via.placeholder.com/300"
+                    image: item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : "https://via.placeholder.com/300"
                   })}
                 >
                   Add to Cart

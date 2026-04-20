@@ -43,6 +43,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState("All");
   const [orderIdSearch, setOrderIdSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState("all");
+  const [selectedDate, setSelectedDate] = useState("");
   const [todayRevenue, setTodayRevenue] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [todayOrders, setTodayOrders] = useState(0);
@@ -52,7 +54,25 @@ export default function AdminDashboard() {
     const matchesStatus = statusFilter === "All" || normalizeStatus(order.status) === statusFilter;
     const matchesOrderId = orderIdSearch === "" || 
       (order.order_id && order.order_id.toLowerCase().includes(orderIdSearch.toLowerCase()));
-    return matchesStatus && matchesOrderId;
+    
+    let matchesDate = true;
+    const orderDate = new Date(order.created_at);
+    
+    if (dateFilter === "today") {
+      matchesDate = orderDate.toDateString() === new Date().toDateString();
+    } else if (dateFilter === "yesterday") {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      matchesDate = orderDate.toDateString() === yesterday.toDateString();
+    } else if (dateFilter === "last7days") {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      matchesDate = orderDate >= sevenDaysAgo;
+    } else if (dateFilter === "custom" && selectedDate) {
+      matchesDate = orderDate.toDateString() === new Date(selectedDate).toDateString();
+    }
+    
+    return matchesStatus && matchesOrderId && matchesDate;
   });
 
   const calculateRevenue = useCallback(() => {
@@ -154,14 +174,13 @@ export default function AdminDashboard() {
         </div>
 
         <ul>
-          <li onClick={toggleSidebar}>📊 Dashboard</li>
-          <li onClick={() => { toggleSidebar(); navigate("/admin/menu"); }}>🍽️ Menu</li>
-          <li onClick={toggleSidebar}>👤 Users</li>
-          <li onClick={handleLogout}>🚪 Logout</li>
+          <li onClick={toggleSidebar}><i className="fa fa-th-large"></i> Dashboard</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/menu"); }}><i className="fa fa-utensils"></i> Menu</li>
+          <li onClick={handleLogout}><i className="fa fa-sign-out-alt"></i> Logout</li>
         </ul>
       </div>
 
-      {/* 🔥 Overlay (mobile) */}
+      {/* Overlay (mobile only) */}
       {isOpen && <div className="overlay" onClick={toggleSidebar}></div>}
 
       {/* 🔥 Main Dashboard */}
@@ -267,16 +286,62 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            <div className="date-filter">
+              <span className="filter-label">Date:</span>
+              <div className="date-buttons">
+                <button
+                  className={`date-btn ${dateFilter === "all" ? "active" : ""}`}
+                  onClick={() => { setDateFilter("all"); setSelectedDate(""); }}
+                >
+                  All
+                </button>
+                <button
+                  className={`date-btn ${dateFilter === "today" ? "active" : ""}`}
+                  onClick={() => setDateFilter("today")}
+                >
+                  Today
+                </button>
+                <button
+                  className={`date-btn ${dateFilter === "yesterday" ? "active" : ""}`}
+                  onClick={() => setDateFilter("yesterday")}
+                >
+                  Yesterday
+                </button>
+                <button
+                  className={`date-btn ${dateFilter === "last7days" ? "active" : ""}`}
+                  onClick={() => setDateFilter("last7days")}
+                >
+                  Last 7 Days
+                </button>
+                <button
+                  className={`date-btn ${dateFilter === "custom" ? "active" : ""}`}
+                  onClick={() => setDateFilter("custom")}
+                >
+                  Custom
+                </button>
+                {dateFilter === "custom" && (
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="date-picker"
+                  />
+                )}
+              </div>
+            </div>
+
             <div className="filter-info">
               <span className="results-counter">
                 Showing {filteredOrders.length} of {orders.length} orders
               </span>
-              {(statusFilter !== "All" || orderIdSearch !== "") && (
+              {(statusFilter !== "All" || orderIdSearch !== "" || dateFilter !== "all") && (
                 <button 
                   className="clear-filters-btn"
                   onClick={() => {
                     setStatusFilter("All");
                     setOrderIdSearch("");
+                    setDateFilter("all");
+                    setSelectedDate("");
                   }}
                 >
                   Clear Filters
@@ -324,11 +389,19 @@ export default function AdminDashboard() {
             {filteredOrders.map((order) => {
               const items = parseItems(order.items);
               const status = normalizeStatus(order.status);
+              const orderDate = new Date(order.created_at);
+              const dateStr = orderDate.toLocaleDateString('en-IN', { 
+                day: 'numeric', 
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+              });
 
               return (
                 <div className="order-card" key={order.id}>
                   <div className="order-info">
                     <span className="order-id">{formatOrderId(order.order_id)}</span>
+                    <span className="order-date">{dateStr}</span>
                     <p>{order.customer_name || order.email}</p>
                     <small>
                       {items.map((item) => `${item.name} x ${item.quantity}`).join(", ")}

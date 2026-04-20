@@ -25,6 +25,13 @@
 .menuTitle i {
   cursor: pointer;
   color: var(--muted);
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menuTitle i {
+    display: block;
+  }
 }
 
 .sidebar a {
