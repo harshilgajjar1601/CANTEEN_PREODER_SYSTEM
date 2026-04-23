@@ -34,7 +34,8 @@
   }
 }
 
-.sidebar a {
+.sidebar a,
+.sidebar > div:not(.menuTitle) {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -44,10 +45,12 @@
   color: var(--text);
   text-decoration: none;
   font-weight: 600;
+  cursor: pointer;
   transition: background 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
-.sidebar a:hover {
+.sidebar a:hover,
+.sidebar > div:not(.menuTitle):hover {
   background: var(--accent);
   color: #ffffff;
   transform: translateX(2px);

@@ -16,10 +16,12 @@ function Login() {
 
 
   useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
     const token = localStorage.getItem("token");
 
-    if (token) {
-        navigate("/menu", { replace: true });
+    if (token && justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+      navigate("/menu", { replace: true });
     }
   }, [location.state, navigate]);
 
@@ -41,6 +43,7 @@ function Login() {
     if (res.data.success) {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("email", res.data.user.email);
+      sessionStorage.setItem("justLoggedIn", "true");
       setMessage(res.data.message);
       setMsgType("success");
 
@@ -83,6 +86,7 @@ function Login() {
               type={passwordVisible ? "text" : "password"}
               placeholder="Password"
               required
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

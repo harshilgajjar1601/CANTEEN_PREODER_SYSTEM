@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../../context/CartContext";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
@@ -15,14 +15,37 @@ function Cart() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+      const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/", { replace: true });
+      } else if (justLoggedIn) {
+        sessionStorage.removeItem("justLoggedIn");
+      }
+    }, [navigate]);
+
+    useEffect(() => {
+      const handlePopState = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.location.href = "/";
+        } else {
+          window.history.pushState(null, "", window.location.href);
+        }
+      };
+
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", handlePopState);
+      return () => window.removeEventListener("popstate", handlePopState);
+    }, []);
+
     const handlePlaceOrder = () => {
-      console.log("Place Order clicked, cart items:", cart.length, "showPayment will be:", true);
       if (cart.length === 0) {
         alert("Your cart is empty! Add items from the menu first.");
         return;
       }
       setShowPayment(true);
-      console.log("showPayment set to true, state should update");
     };
 
     const total = cart.reduce((acc, item) => acc + item.price * item.quantity,0);
@@ -38,8 +61,6 @@ function Cart() {
     };
 
 const handlePayment = async () => {
-  alert("Starting payment process...");
-  console.log("handlePayment called");
   
   const userEmail = localStorage.getItem("email");
   if (!userEmail) {
@@ -79,7 +100,7 @@ const handlePayment = async () => {
       
       setTimeout(() => {
         setShowSuccess(false);
-        navigate("/orders");
+        navigate("/orders", { replace: true });
       }, 2000);
     } else {
       alert("Failed: " + (result.message || "Unknown error"));

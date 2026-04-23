@@ -36,7 +36,32 @@ export default function MenuManagement() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+      navigate("/admin/adminLogin", { replace: true });
+      return;
+    }
+    if (justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+    }
     fetchMenuItems();
+  }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const admin = localStorage.getItem("admin");
+      if (!admin) {
+        window.location.href = "/";
+      } else {
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const toggleSidebar = () => {
@@ -221,7 +246,7 @@ export default function MenuManagement() {
         </div>
 
         <ul>
-          <li onClick={() => { toggleSidebar(); navigate("/admin/adminDashboard"); }}><i className="fa fa-th-large"></i> Dashboard</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/adminDashboard", { replace: true }); }}><i className="fa fa-th-large"></i> Dashboard</li>
           <li onClick={toggleSidebar}><i className="fa fa-utensils"></i> Menu</li>
           <li onClick={handleLogout}><i className="fa fa-sign-out-alt"></i> Logout</li>
         </ul>

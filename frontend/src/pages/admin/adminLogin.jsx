@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../styles/user/login.css";
@@ -11,6 +11,16 @@ function AdminLogin() {
   const [msgType, setMsgType] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+    const admin = localStorage.getItem("admin");
+
+    if (admin && justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+      navigate("/admin/adminDashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const togglePassword = () => {
     setPasswordVisible((prev) => !prev);
@@ -26,7 +36,8 @@ function AdminLogin() {
       });
 
       if (res.data.success) {
-        localStorage.setItem("admin", true); // 🔥 admin flag
+        localStorage.setItem("admin", true);
+        sessionStorage.setItem("justLoggedIn", "true");
 
         setMsg(res.data.message);
         setMsgType("success");
@@ -65,13 +76,14 @@ function AdminLogin() {
               </div>
 
               <div className="input-box password-box">
-                  <input
+<input
                   type={passwordVisible ? "text" : "password"}
                   placeholder="Password"
                   required
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  />
+                />
                   <i className="fa fa-lock"></i>
                   <span className="toggle" onClick={togglePassword}>
                     <i

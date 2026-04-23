@@ -50,6 +50,32 @@ export default function AdminDashboard() {
   const [todayOrders, setTodayOrders] = useState(0);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+      navigate("/admin/adminLogin", { replace: true });
+    } else if (justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const admin = localStorage.getItem("admin");
+      if (!admin) {
+        window.location.href = "/";
+      } else {
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const filteredOrders = orders.filter(order => {
     const matchesStatus = statusFilter === "All" || normalizeStatus(order.status) === statusFilter;
     const matchesOrderId = orderIdSearch === "" || 
@@ -174,8 +200,8 @@ export default function AdminDashboard() {
         </div>
 
         <ul>
-          <li onClick={toggleSidebar}><i className="fa fa-th-large"></i> Dashboard</li>
-          <li onClick={() => { toggleSidebar(); navigate("/admin/menu"); }}><i className="fa fa-utensils"></i> Menu</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/adminDashboard", { replace: true }); }}><i className="fa fa-th-large"></i> Dashboard</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/menu", { replace: true }); }}><i className="fa fa-utensils"></i> Menu</li>
           <li onClick={handleLogout}><i className="fa fa-sign-out-alt"></i> Logout</li>
         </ul>
       </div>

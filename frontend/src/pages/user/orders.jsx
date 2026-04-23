@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
 import "../../styles/user/orders.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const STATUS_OPTIONS = ["Pending", "Preparing", "Ready", "Picked Up"];
 
@@ -30,9 +30,35 @@ const statusClass = (status) =>
   normalizeStatus(status).toLowerCase().replace(/\s+/g, "-");
 
 function Orders() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("active");
+
+  useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/", { replace: true });
+    } else if (justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/";
+      } else {
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");

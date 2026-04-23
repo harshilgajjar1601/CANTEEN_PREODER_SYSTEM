@@ -26,12 +26,30 @@ function Menu() {
     }
   });
   useEffect(() => {
+  const justLoggedIn = sessionStorage.getItem("justLoggedIn");
   const token = localStorage.getItem("token");
 
   if (!token) {
     navigate("/", { replace: true });
+  } else if (justLoggedIn) {
+    sessionStorage.removeItem("justLoggedIn");
   }
   }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/";
+      } else {
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   useEffect(() => {
     fetchMenuItems();
