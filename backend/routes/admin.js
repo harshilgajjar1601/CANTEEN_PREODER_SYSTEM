@@ -7,7 +7,7 @@ const adminEmail = process.env.ADMIN_EMAIL;
 const adminPassword = process.env.ADMIN_PASSWORD;
 const VALID_STATUSES = ["Pending", "Preparing", "Ready", "Picked Up"];
 
-// 🔥 ADMIN LOGIN
+//ADMIN LOGIN
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
 

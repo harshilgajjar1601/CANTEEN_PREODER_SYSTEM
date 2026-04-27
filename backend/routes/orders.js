@@ -10,7 +10,7 @@ const normalizeOrder = (order) => ({
 });
 
 
-// 🔥 GET orders by email
+//GET orders by email
 router.get("/", (req, res) => {
   const { email } = req.query;
 
@@ -32,7 +32,7 @@ router.get("/", (req, res) => {
 });
 
 
-// 🔥 POST - save order
+//POST - save order
 router.post("/", (req, res) => {
   const { order_id, items, amount, email } = req.body;
   const status = "Pending";
