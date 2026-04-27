@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-const adminEmail = "admin@gmail.com";
-const adminPassword = "admin123";
+require("dotenv").config();
+
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPassword = process.env.ADMIN_PASSWORD;
 const VALID_STATUSES = ["Pending", "Preparing", "Ready", "Picked Up"];
 
 // 🔥 ADMIN LOGIN
