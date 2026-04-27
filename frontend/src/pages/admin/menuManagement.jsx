@@ -30,10 +30,38 @@ export default function MenuManagement() {
     image_url: ""
   });
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
+    const justLoggedIn = sessionStorage.getItem("justLoggedIn");
+    const admin = localStorage.getItem("admin");
+
+    if (!admin) {
+      navigate("/admin/adminLogin", { replace: true });
+      return;
+    }
+    if (justLoggedIn) {
+      sessionStorage.removeItem("justLoggedIn");
+    }
     fetchMenuItems();
+  }, [navigate]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const admin = localStorage.getItem("admin");
+      if (!admin) {
+        window.location.href = "/";
+      } else {
+        window.history.pushState(null, "", window.location.href);
+      }
+    };
+
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const toggleSidebar = () => {
@@ -64,8 +92,47 @@ export default function MenuManagement() {
     
     if (editingItem) {
       await handleUpdate();
+      if (selectedImage) {
+        await handleImageUpload(editingItem.id);
+      }
     } else {
       await handleAdd();
+    }
+  };
+
+  const handleImageUpload = async (id) => {
+    if (!selectedImage) return;
+    
+    setUploading(true);
+    const formDataImg = new FormData();
+    formDataImg.append("image", selectedImage);
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/admin/menu/${id}/image`, {
+        method: "PUT",
+        body: formDataImg
+      });
+      const data = await res.json();
+      if (data.success) {
+        fetchMenuItems();
+      }
+    } catch (error) {
+      console.log("Image upload error:", error);
+    } finally {
+      setUploading(false);
+      setSelectedImage(null);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, image_url: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -140,8 +207,9 @@ export default function MenuManagement() {
       category: item.category,
       price: item.price.toString(),
       tag: item.tag || "",
-      image_url: item.image_url || ""
+      image_url: item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : ""
     });
+    setSelectedImage(null);
     setShowForm(true);
     
     setTimeout(() => {
@@ -159,6 +227,7 @@ export default function MenuManagement() {
       tag: "",
       image_url: ""
     });
+    setSelectedImage(null);
   };
 
   const filteredItems = categoryFilter === "All" 
@@ -177,10 +246,9 @@ export default function MenuManagement() {
         </div>
 
         <ul>
-          <li onClick={() => { toggleSidebar(); navigate("/admin/adminDashboard"); }}>📊 Dashboard</li>
-          <li onClick={toggleSidebar}>🍽️ Menu</li>
-          <li onClick={toggleSidebar}>👤 Users</li>
-          <li onClick={handleLogout}>🚪 Logout</li>
+          <li onClick={() => { toggleSidebar(); navigate("/admin/adminDashboard", { replace: true }); }}><i className="fa fa-th-large"></i> Dashboard</li>
+          <li onClick={toggleSidebar}><i className="fa fa-utensils"></i> Menu</li>
+          <li onClick={handleLogout}><i className="fa fa-sign-out-alt"></i> Logout</li>
         </ul>
       </div>
 
@@ -271,13 +339,20 @@ export default function MenuManagement() {
 
                 <div className="form-row">
                   <div className="form-group full-width">
-                    <label>Image URL (Optional)</label>
+                    <label>Image Upload (Optional)</label>
                     <input
-                      type="text"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                      placeholder="e.g., /uploads/menu/burger.webp or https://example.com/image.jpg"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
                     />
+                    {selectedImage && (
+                      <p className="file-name">Selected: {selectedImage.name}</p>
+                    )}
+                    {formData.image_url && !selectedImage && (
+                      <div className="preview-image">
+                        <img src={formData.image_url} alt="Preview" />
+                      </div>
+                    )}
                   </div>
                 </div>
 

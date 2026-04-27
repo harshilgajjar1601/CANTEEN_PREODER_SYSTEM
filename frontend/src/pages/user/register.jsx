@@ -84,6 +84,7 @@ function Register() {
               type={passwordVisible ? "text" : "password"}
               placeholder="Password"
               required
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
