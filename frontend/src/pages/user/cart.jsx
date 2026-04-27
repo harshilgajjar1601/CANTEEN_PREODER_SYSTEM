@@ -9,7 +9,7 @@ function Cart() {
     const { cart, addToCart, removeFromCart, clearCart } = useContext(CartContext);
     const [loading, setLoading] = useState(false);
 
-    // 🔥 NEW STATES
+    //NEW STATES
     const [showPayment, setShowPayment] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -55,7 +55,7 @@ function Cart() {
       sidebar.classList.toggle("active");
     };
 
-    // 🔥 ORDER ID + PAYMENT LOGIC
+    //ORDER ID + PAYMENT LOGIC
     const generateOrderId = () => {
       return "ORD #" + Math.floor(1000 + Math.random() * 9000);
     };

@@ -44,7 +44,7 @@ exports.loginUser = async (req, res) => {
 
         const user = result[0];
 
-        // 🔥 IMPORTANT LINE
+        //IMPORTANT LINE
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
