@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 
 
 
-// routes (aagad use thase)
+// routes
 const authRoutes = require("./routes/auth");
 const orderRoutes = require("./routes/orders");
 const adminRoutes = require("./routes/admin");
