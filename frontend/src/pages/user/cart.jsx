@@ -51,7 +51,6 @@ function Cart() {
           order_id: orderId,
           items: JSON.stringify(cart), // 👈 stringify
           amount: total,
-          status: "Pending",
           email: email
         })
       });

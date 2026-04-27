@@ -69,6 +69,11 @@ tbody tr:nth-child(even) {
   color: var(--success);
 }
 
+.status.picked-up {
+  background: rgba(55, 95, 172, 0.12);
+  color: #375fac;
+}
+
 .orders-content p {
   color: var(--muted);
 }

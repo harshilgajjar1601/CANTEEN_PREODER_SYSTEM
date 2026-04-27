@@ -6,6 +6,7 @@ import Cart from "./pages/user/cart";
 import Orders from "./pages/user/orders";
 import AdminLogin from "./pages/admin/adminLogin";
 import AdminDashboard from "./pages/admin/adminDashboard";
+import MenuManagement from "./pages/admin/menuManagement";
 
 
 
@@ -32,8 +33,11 @@ function App() {
          <Route path="/admin/adminLogin" element={<AdminLogin />} />
 
           {/* Admin dashboard */}
-         <Route path="/admin/adminDashboard" element={<AdminDashboard />} />
-      </Routes>
+          <Route path="/admin/adminDashboard" element={<AdminDashboard />} />
+
+           {/* Menu management */}
+          <Route path="/admin/menu" element={<MenuManagement />} />
+       </Routes>
     </BrowserRouter>
   );
 }

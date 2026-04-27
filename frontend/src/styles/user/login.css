@@ -62,6 +62,10 @@
   position: relative;
 }
 
+.password-box {
+  position: relative;
+}
+
 .input-box input {
   width: 100%;
   min-height: 52px;
@@ -83,6 +87,10 @@
   box-shadow: 0 0 0 4px rgba(255, 122, 0, 0.12);
 }
 
+.password-box input {
+  padding-right: 54px;
+}
+
 .input-box i {
   position: absolute;
   top: 50%;
@@ -95,10 +103,18 @@
 .toggle {
   position: absolute;
   top: 50%;
-  right: 14px;
+  right: 12px;
   transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   color: #876d5a;
   cursor: pointer;
+  z-index: 2;
+  user-select: none;
 }
 
 .auth-button {
@@ -203,5 +219,15 @@
   .input-box input {
     min-height: 50px;
     padding-inline: 42px 42px;
+  }
+
+  .password-box input {
+    padding-right: 52px;
+  }
+
+  .toggle {
+    right: 10px;
+    width: 32px;
+    height: 32px;
   }
 }

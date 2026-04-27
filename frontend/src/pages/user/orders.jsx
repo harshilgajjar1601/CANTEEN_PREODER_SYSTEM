@@ -1,7 +1,32 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Sidebar from "../../components/sidebar";
 import Navbar from "../../components/navbar";
 import "../../styles/user/orders.css";
+
+const STATUS_OPTIONS = ["Pending", "Preparing", "Ready", "Picked Up"];
+
+const formatOrderId = (orderId) => {
+  if (!orderId) {
+    return "";
+  }
+
+  if (orderId.startsWith("ORD #")) {
+    return orderId;
+  }
+
+  return orderId.replace(/^ORD[-\s]*/, "ORD #");
+};
+
+const normalizeStatus = (status) => {
+  if (!status) {
+    return "Pending";
+  }
+
+  return STATUS_OPTIONS.includes(status) ? status : "Pending";
+};
+
+const statusClass = (status) =>
+  normalizeStatus(status).toLowerCase().replace(/\s+/g, "-");
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -11,7 +36,7 @@ function Orders() {
     sidebar.classList.toggle("active");
   };
 
-  useEffect(() => {
+  const fetchOrders = useCallback(() => {
     const email = localStorage.getItem("email");
 
     if (!email) {
@@ -23,22 +48,18 @@ function Orders() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Orders Data 🔥", data);
-        setOrders(data);
+        setOrders(Array.isArray(data) ? data : []);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  const formatOrderId = (orderId) => {
-    if (!orderId) {
-      return "";
-    }
+  useEffect(() => {
+    fetchOrders();
 
-    if (orderId.startsWith("ORD #")) {
-      return orderId;
-    }
+    const interval = setInterval(fetchOrders, 15000);
 
-    return orderId.replace(/^ORD[-\s]*/, "ORD #");
-  };
+    return () => clearInterval(interval);
+  }, [fetchOrders]);
 
   return (
     <div className="orders-container">
@@ -73,7 +94,10 @@ function Orders() {
 
               <tbody>
                 {orders.map((order, index) => {
-                  const items = JSON.parse(order.items);
+                  const items = Array.isArray(order.items)
+                    ? order.items
+                    : JSON.parse(order.items || "[]");
+                  const status = normalizeStatus(order.status);
 
                   return (
                     <tr key={index}>
@@ -89,8 +113,8 @@ function Orders() {
 
                       <td>₹{order.amount}</td>
 
-                      <td className={`status ${order.status.toLowerCase()}`}>
-                        {order.status}
+                      <td className={`status ${statusClass(status)}`}>
+                        {status}
                       </td>
                     </tr>
                   );
