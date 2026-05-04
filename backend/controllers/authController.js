@@ -9,7 +9,6 @@ exports.registerUser = async (req, res) => {
     try {
         // check user exists
         const [user] = await userModel.findUserByEmail(email);
-        console.log(user);
 
         if (user.length > 0) {
             return res.json({ message: "Username is already exist!try another username..." });
